@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigitalMKT Arena | VISORIA Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0B2545;
+  --navy-deep: #061A33;
+  --teal: #137DC5;
+  --teal-light: #4FA8DD;
+  --gold: #C8963E;
+  --gold-light: #E5B96B;
+  --cream: #F4F1E8;
+  --paper: #FAF8F2;
+  --ink: #0B2545;
+  --muted: rgba(11, 37, 69, 0.55);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Geist', -apple-system, sans-serif;
+  font-feature-settings: 'ss01', 'ss02';
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(19, 125, 197, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(200, 150, 62, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.deck {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 5vh 6vw;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+  overflow-y: auto;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ============== NAV BAR ============== */
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5vh 3vw;
+  background: linear-gradient(to top, var(--paper) 70%, transparent);
+  z-index: 100;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.nav-left .logo {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-btn {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: 1px solid rgba(11, 37, 69, 0.15);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  font-family: 'Geist Mono', monospace;
+  font-size: 1rem;
+}
+
+.nav-btn:hover {
+  background: var(--navy);
+  color: var(--paper);
+  border-color: var(--navy);
+  transform: translateY(-2px);
+}
+
+.counter {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  min-width: 4rem;
+  text-align: center;
+}
+
+/* ============== TYPOGRAPHY ============== */
+.eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 1.5rem;
+  height: 1px;
+  background: var(--gold);
+}
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+  color: var(--navy);
+}
+
+h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--navy);
+}
+
+h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--navy);
+}
+
+p, li {
+  font-family: 'Geist', sans-serif;
+  line-height: 1.55;
+  color: rgba(11, 37, 69, 0.78);
+}
+
+.italic-serif {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ============== SLIDE 1: COVER ============== */
+.cover {
+  background: var(--navy);
+  color: var(--paper);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+.cover-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 150, 62, 0.3);
+}
+
+.cover-circle.c1 { width: 600px; height: 600px; top: -200px; right: -150px; }
+.cover-circle.c2 { width: 400px; height: 400px; top: -100px; right: -50px; border-color: rgba(200, 150, 62, 0.5); }
+.cover-circle.c3 { width: 250px; height: 250px; top: -25px; right: 25px; border-color: rgba(200, 150, 62, 0.7); }
+
+.cover-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5vh 6vw;
+}
+
+.cover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  color: rgba(244, 241, 232, 0.6);
+  letter-spacing: 0.1em;
+}
+
+.cover-header .brand {
+  color: var(--gold);
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.cover-main h1 {
+  font-size: clamp(4rem, 9vw, 9rem);
+  color: var(--paper);
+  margin-bottom: 1.5rem;
+}
+
+.cover-main h1 .accent {
+  color: var(--gold);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.cover-tagline {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  color: var(--teal-light);
+  font-weight: 400;
+  max-width: 60ch;
+  line-height: 1.3;
+}
+
+.cover-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  color: rgba(244, 241, 232, 0.6);
+  letter-spacing: 0.05em;
+}
+
+.cover-footer .credit {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.875rem;
+  color: rgba(244, 241, 232, 0.85);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.cover-footer .credit strong {
+  color: var(--paper);
+  font-weight: 600;
+}
+
+/* ============== SLIDE LAYOUTS ============== */
+.slide-padding {
+  padding: 8vh 8vw;
+}
+
+.slide-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide-title h2 {
+  font-size: clamp(3rem, 7vw, 6.5rem);
+}
+
+.slide-title .lead {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  color: var(--muted);
+  margin-top: 2rem;
+  max-width: 65ch;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Two column */
+.two-col {
+  display: grid;
+  grid-template-columns: 0.85fr 1fr;
+  gap: 5vw;
+  flex: 1;
+  align-items: start;
+  padding-top: 2vh;
+}
+
+.col-narrative h2 {
+  font-size: clamp(2.2rem, 4.5vw, 4rem);
+  margin-bottom: 1.5rem;
+}
+
+.col-narrative p {
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  margin-bottom: 1rem;
+}
+
+/* ============== ITEMS LIST ============== */
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  padding: 1.2rem 0;
+  border-top: 1px solid rgba(11, 37, 69, 0.1);
+  align-items: baseline;
+}
+
+.item:last-child {
+  border-bottom: 1px solid rgba(11, 37, 69, 0.1);
+}
+
+.item-num {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--gold);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding-top: 0.3rem;
+}
+
+.item h4 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.item p {
+  font-size: 0.95rem;
+  color: rgba(11, 37, 69, 0.7);
+}
+
+/* ============== UNIDADES ============== */
+.unidades {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.unidad {
+  background: var(--cream);
+  padding: 2rem;
+  position: relative;
+  border-top: 3px solid var(--gold);
+}
+
+.unidad-num {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  margin-bottom: 0.8rem;
+}
+
+.unidad h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  line-height: 1.15;
+}
+
+.unidad p {
+  font-size: 0.9rem;
+  color: rgba(11, 37, 69, 0.7);
+  margin-bottom: 1rem;
+}
+
+.unidad-mech {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--teal);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-top: 1px dashed rgba(11, 37, 69, 0.2);
+  padding-top: 0.8rem;
+}
+
+/* ============== CATEGORIES GRID ============== */
+.cats-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: minmax(0, 1fr);
+  gap: 0.8rem;
+  margin-top: 2rem;
+  flex: 1;
+}
+
+.cat {
+  background: var(--paper);
+  border: 1px solid rgba(11, 37, 69, 0.12);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.cat:hover {
+  background: var(--navy);
+  color: var(--paper);
+  transform: translateY(-4px);
+  border-color: var(--navy);
+}
+
+.cat:hover h4, .cat:hover .cat-num { color: var(--gold); }
+.cat:hover p { color: rgba(244, 241, 232, 0.75); }
+.cat:hover .cat-tag { background: rgba(200, 150, 62, 0.15); color: var(--gold-light); }
+
+.cat.new {
+  background: var(--cream);
+  border-color: var(--gold);
+}
+
+.cat-num {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.cat h4 {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.cat p {
+  font-size: 0.78rem;
+  color: rgba(11, 37, 69, 0.65);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.cat-tag {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(200, 150, 62, 0.12);
+  color: var(--gold);
+  padding: 0.25rem 0.5rem;
+  align-self: flex-start;
+  border-radius: 2px;
+}
+
+/* ============== STAT BLOCK ============== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 3rem;
+}
+
+.stat {
+  padding: 2rem 1.5rem;
+  border-left: 1px solid rgba(11, 37, 69, 0.15);
+}
+
+.stat:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.stat-num .unit {
+  font-size: 0.4em;
+  color: var(--gold);
+  font-style: italic;
+  font-weight: 400;
+  margin-left: 0.2rem;
+}
+
+.stat-label {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 1rem;
+}
+
+/* ============== MERCADO DINAMICO (DESTACADO) ============== */
+.mercado-slide {
+  background: var(--navy);
+  color: var(--paper);
+  position: relative;
+  overflow: hidden;
+}
+
+.mercado-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 30% 50%, rgba(19, 125, 197, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 70% 50%, rgba(200, 150, 62, 0.08) 0%, transparent 50%);
+}
+
+.mercado-slide .eyebrow { color: var(--gold-light); }
+.mercado-slide .eyebrow::before { background: var(--gold-light); }
+.mercado-slide h2 { color: var(--paper); }
+.mercado-slide p { color: rgba(244, 241, 232, 0.85); }
+.mercado-slide .lead { color: var(--teal-light); }
+
+.mercado-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5vw;
+  flex: 1;
+  align-items: center;
+}
+
+.mercado-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.mercado-feature {
+  padding: 1.2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 2px solid var(--gold);
+  backdrop-filter: blur(10px);
+}
+
+.mercado-feature h4 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.mercado-feature p {
+  font-size: 0.9rem;
+  color: rgba(244, 241, 232, 0.75);
+  line-height: 1.45;
+}
+
+/* ============== TOOLS ============== */
+.tools {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.tools-section h3 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tools-section h3::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(11, 37, 69, 0.15);
+}
+
+.tool {
+  background: var(--paper);
+  border: 1px solid rgba(11, 37, 69, 0.12);
+  padding: 1.2rem;
+  transition: all 0.25s ease;
+}
+
+.tool:hover {
+  border-color: var(--teal);
+  box-shadow: 0 8px 24px rgba(11, 37, 69, 0.08);
+}
+
+.tool-name {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--navy);
+  margin-bottom: 0.3rem;
+}
+
+.tool-when {
+  font-family: 'Geist', sans-serif;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ============== SCORE BREAKDOWN ============== */
+.score-viz {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: 1.5fr auto 4fr auto;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.score-label {
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.score-pct {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.score-bar {
+  height: 0.5rem;
+  background: rgba(11, 37, 69, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--teal), var(--gold));
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.score-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ============== ROADMAP ============== */
+.roadmap {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-top: 3rem;
+  position: relative;
+}
+
+.roadmap::before {
+  content: '';
+  position: absolute;
+  top: 1.2rem;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+.round {
+  text-align: center;
+  position: relative;
+  padding-top: 2.8rem;
+}
+
+.round::before {
+  content: '';
+  position: absolute;
+  top: 0.7rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--gold);
+  z-index: 1;
+}
+
+.round-num {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.round h5 {
+  font-family: 'Fraunces', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+
+.round-day {
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* ============== CLOSING ============== */
+.closing {
+  background: var(--navy);
+  color: var(--paper);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.closing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 50% 100%, rgba(200, 150, 62, 0.12) 0%, transparent 60%);
+}
+
+.closing-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8vh 8vw;
+}
+
+.closing h2 {
+  font-size: clamp(3rem, 6.5vw, 6rem);
+  color: var(--paper);
+  max-width: 18ch;
+  margin-bottom: 2rem;
+}
+
+.closing h2 .accent {
+  color: var(--gold);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.closing-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 4rem;
+  max-width: 1100px;
+}
+
+.action-block {
+  border-top: 1px solid rgba(200, 150, 62, 0.4);
+  padding-top: 1.5rem;
+}
+
+.action-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.action-block h4 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+  color: var(--paper);
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+
+.action-block p {
+  font-size: 0.9rem;
+  color: rgba(244, 241, 232, 0.7);
+  line-height: 1.5;
+}
+
+/* ============== ANIMATIONS ============== */
+.slide.active .stagger > * {
+  opacity: 0;
+  animation: stagger-in 0.7s ease forwards;
+}
+
+.slide.active .stagger > *:nth-child(1) { animation-delay: 0.15s; }
+.slide.active .stagger > *:nth-child(2) { animation-delay: 0.30s; }
+.slide.active .stagger > *:nth-child(3) { animation-delay: 0.45s; }
+.slide.active .stagger > *:nth-child(4) { animation-delay: 0.60s; }
+.slide.active .stagger > *:nth-child(5) { animation-delay: 0.75s; }
+.slide.active .stagger > *:nth-child(6) { animation-delay: 0.90s; }
+.slide.active .stagger > *:nth-child(7) { animation-delay: 1.05s; }
+.slide.active .stagger > *:nth-child(8) { animation-delay: 1.20s; }
+
+@keyframes stagger-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+}
+
+/* Progress bar */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--gold);
+  z-index: 200;
+  transition: width 0.4s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+<!-- ============== SLIDE 1: COVER ============== -->
+<section class="slide cover active" data-slide="1">
+  <div class="cover-bg-grid"></div>
+  <div class="cover-circle c1"></div>
+  <div class="cover-circle c2"></div>
+  <div class="cover-circle c3"></div>
+
+  <div class="cover-content stagger">
+    <div class="cover-header">
+      <div>
+        <span class="brand">VISORIA</span> Intelligence
+      </div>
+      <div>v2.0 · ABRIL 2026</div>
+    </div>
+
+    <div class="cover-main">
+      <h1>DigitalMKT<br><span class="accent">Arena</span></h1>
+      <p class="cover-tagline">Un simulador donde las decisiones tienen consecuencias y el mercado responde.</p>
+    </div>
+
+    <div class="cover-footer">
+      <div>UNIVERSIDAD DE LA SALLE · MAESTRÍA EN E-COMMERCE Y MARKETING DIGITAL</div>
+      <div class="credit">
+        <strong>Prof. Fernando Rubiano</strong><br>
+        Asignatura: Analítica en la Web
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 2: EL PROBLEMA / OPORTUNIDAD ============== -->
+<section class="slide slide-padding slide-title" data-slide="2">
+  <div class="stagger">
+    <div class="eyebrow">El punto de partida</div>
+    <h2>Aprender marketing digital<br>leyendo casos no es <span class="italic-serif">aprender</span><br>marketing digital.</h2>
+    <p class="lead">Los gerentes que ustedes serán deciden bajo presupuesto limitado, contra competidores que también deciden, en mercados que cambian. La asignatura debe replicar esa experiencia, no describirla.</p>
+  </div>
+</section>
+
+<!-- ============== SLIDE 3: LA PROPUESTA ============== -->
+<section class="slide slide-padding" data-slide="3">
+  <div class="stagger" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="eyebrow">La propuesta</div>
+    <div class="two-col">
+      <div class="col-narrative">
+        <h2>Una arena<br>competitiva.</h2>
+        <p>Cada equipo recibe una marca, un buyer persona y un presupuesto inicial de <strong>$120 millones COP</strong>. Compiten durante 7 rondas tomando decisiones gerenciales reales sobre dónde invertir, cuándo innovar y cómo construir marca.</p>
+        <p>Cada decisión genera datos. Esos datos alimentan dashboards. Esos dashboards sustentan la siguiente decisión. Esto es la asignatura, vivida.</p>
+      </div>
+
+      <div class="items">
+        <div class="item">
+          <div class="item-num">01</div>
+          <div>
+            <h4>Decisiones de inversión</h4>
+            <p>10 categorías: medios digitales y tradicionales, contenido orgánico, influencers, producto, web, redes, estudios de mercado, asesoría externa, IA.</p>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">02</div>
+          <div>
+            <h4>Mercado dinámico</h4>
+            <p>Las decisiones de cada equipo afectan al ecosistema completo. Saturación, guerra de precios, share of voice relativo.</p>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">03</div>
+          <div>
+            <h4>Ranking en tiempo real</h4>
+            <p>El leaderboard se recalcula tras cada jugada. La presión competitiva es permanente.</p>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-num">04</div>
+          <div>
+            <h4>Entregables auténticos</h4>
+            <p>Dashboard publicado en GitHub Pages + presentación storytelling. Todo queda como portafolio profesional.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 4: PARÁMETROS DEL SIMULADOR ============== -->
+<section class="slide slide-padding" data-slide="4">
+  <div class="stagger">
+    <div class="eyebrow">El terreno de juego</div>
+    <h2 style="font-size: clamp(2.5rem, 5vw, 4.5rem); max-width: 18ch; margin-bottom: 2rem;">Diez equipos, siete rondas,<br>un mercado que <span class="italic-serif">no perdona errores.</span></h2>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-num">10<span class="unit">equipos</span></div>
+        <div class="stat-label">Compitiendo en paralelo</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">7<span class="unit">rondas</span></div>
+        <div class="stat-label">Dos jugadas por sesión</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">$120<span class="unit">M COP</span></div>
+        <div class="stat-label">Presupuesto inicial</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">10<span class="unit">canales</span></div>
+        <div class="stat-label">Categorías de decisión</div>
+      </div>
+    </div>
+
+    <div class="roadmap" style="margin-top: 5rem;">
+      <div class="round">
+        <div class="round-num">R1</div>
+        <h5>Diagnóstico</h5>
+        <div class="round-day">Día 2 · U1</div>
+      </div>
+      <div class="round">
+        <div class="round-num">R2</div>
+        <h5>Adopción IA</h5>
+        <div class="round-day">Día 3 · U1</div>
+      </div>
+      <div class="round">
+        <div class="round-num">R3</div>
+        <h5>KPIs</h5>
+        <div class="round-day">Día 4 · U2</div>
+      </div>
+      <div class="round">
+        <div class="round-num">R4</div>
+        <h5>Dashboard</h5>
+        <div class="round-day">Día 5 · U2</div>
+      </div>
+      <div class="round">
+        <div class="round-num">R5</div>
+        <h5>Optimización</h5>
+        <div class="round-day">Día 6 · U2</div>
+      </div>
+      <div class="round">
+        <div class="round-num">R6</div>
+        <h5>Finanzas</h5>
+        <div class="round-day">Día 7 · U3</div>
+      </div>
+      <div class="round">
+        <div class="round-num">R7</div>
+        <h5>Storytelling</h5>
+        <div class="round-day">Día 8 · U3</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 5: 10 CATEGORÍAS ============== -->
+<section class="slide slide-padding" data-slide="5">
+  <div class="stagger" style="height: 100%; display: flex; flex-direction: column;">
+    <div>
+      <div class="eyebrow">Las palancas estratégicas</div>
+      <h2 style="font-size: clamp(2.2rem, 4vw, 3.5rem); margin-bottom: 0.8rem;">Diez decisiones por jugada.</h2>
+      <p style="max-width: 70ch; font-size: 1.05rem;">Cada equipo distribuye su presupuesto entre canales digitales, tradicionales, orgánicos y de inteligencia. Cada categoría tiene rendimientos decrecientes — concentrarse en una sola es perder.</p>
+    </div>
+
+    <div class="cats-grid">
+      <div class="cat">
+        <div class="cat-num">01</div>
+        <h4>Medios digitales</h4>
+        <p>SEM, Display, Social Ads</p>
+      </div>
+      <div class="cat new">
+        <div class="cat-num">02</div>
+        <h4>Medios tradicionales</h4>
+        <p>TV, radio, prensa, OOH</p>
+        <span class="cat-tag">v2</span>
+      </div>
+      <div class="cat">
+        <div class="cat-num">03</div>
+        <h4>Contenido orgánico</h4>
+        <p>SEO, blog, formatos sociales</p>
+      </div>
+      <div class="cat">
+        <div class="cat-num">04</div>
+        <h4>Influencers</h4>
+        <p>Nano, micro, macro tier</p>
+      </div>
+      <div class="cat">
+        <div class="cat-num">05</div>
+        <h4>Producto y precio</h4>
+        <p>SKU, promociones, bundling</p>
+      </div>
+      <div class="cat new">
+        <div class="cat-num">06</div>
+        <h4>Rediseño web</h4>
+        <p>Tres niveles de profundidad</p>
+        <span class="cat-tag">v2</span>
+      </div>
+      <div class="cat">
+        <div class="cat-num">07</div>
+        <h4>Redes sociales</h4>
+        <p>Mix de plataformas</p>
+      </div>
+      <div class="cat new">
+        <div class="cat-num">08</div>
+        <h4>Estudios de mercado</h4>
+        <p>Cuanti, cuali o integral</p>
+        <span class="cat-tag">v2</span>
+      </div>
+      <div class="cat new">
+        <div class="cat-num">09</div>
+        <h4>Asesoría experta</h4>
+        <p>Consultor junior, senior, CMO</p>
+        <span class="cat-tag">v2</span>
+      </div>
+      <div class="cat">
+        <div class="cat-num">10</div>
+        <h4>Inteligencia + IA</h4>
+        <p>EMIS, Legiscomex, Claude, Gemini</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 6: MERCADO DINÁMICO ============== -->
+<section class="slide mercado-slide slide-padding" data-slide="6">
+  <div class="stagger" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+    <div class="eyebrow">El corazón del simulador</div>
+    <div class="mercado-content">
+      <div>
+        <h2 style="font-size: clamp(2.5rem, 5.5vw, 4.5rem); margin-bottom: 2rem;">No juegan<br>contra el sistema.<br><span class="italic-serif">Juegan entre ustedes.</span></h2>
+        <p class="lead" style="font-family: 'Fraunces', serif; font-style: italic; font-size: 1.4rem; line-height: 1.4; max-width: 30ch;">El mercado responde. Los costos suben con la saturación. Los precios bajos contagian al sector. Ser pionero paga.</p>
+      </div>
+
+      <div class="mercado-features">
+        <div class="mercado-feature">
+          <h4>Share of voice relativo</h4>
+          <p>No importa cuánto inviertes en absoluto, sino cuánto frente a los demás. La visibilidad es competencia pura.</p>
+        </div>
+        <div class="mercado-feature">
+          <h4>Saturación publicitaria</h4>
+          <p>Si seis o más equipos van al mismo canal, el costo sube 30% para todos. La diferenciación tiene premio.</p>
+        </div>
+        <div class="mercado-feature">
+          <h4>Guerra de precios</h4>
+          <p>Si la mitad del mercado baja precios, los márgenes caen para todos durante dos rondas. Externalidades reales.</p>
+        </div>
+        <div class="mercado-feature">
+          <h4>Premio al pionero</h4>
+          <p>El primero que adopta una herramienta nueva recibe 20% de eficiencia extra. Los seguidores solo igualan.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 7: HERRAMIENTAS ============== -->
+<section class="slide slide-padding" data-slide="7">
+  <div class="stagger" style="height: 100%; display: flex; flex-direction: column;">
+    <div>
+      <div class="eyebrow">Tu stack, tu elección</div>
+      <h2 style="font-size: clamp(2.2rem, 4.5vw, 3.8rem); margin-bottom: 0.8rem;">Sugerimos. <span class="italic-serif">No imponemos.</span></h2>
+      <p style="max-width: 70ch; font-size: 1.05rem;">Cada equipo elige las herramientas que mejor le sirvan. Saber elegir la herramienta correcta para cada problema es competencia gerencial.</p>
+    </div>
+
+    <div class="tools-section">
+      <h3>Para dashboards y análisis</h3>
+      <div class="tools">
+        <div class="tool">
+          <div class="tool-name">Power BI</div>
+          <div class="tool-when">Estándar empresarial · DAX potente</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">Looker Studio</div>
+          <div class="tool-when">Web-first · Conexión nativa Google</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">Claude</div>
+          <div class="tool-when">Análisis profundo · Artifacts interactivos</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">Gemini</div>
+          <div class="tool-when">Datos en Sheets · Multi-modal</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">Perplexity</div>
+          <div class="tool-when">Benchmarks · Datos sectoriales</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">Dashboard custom</div>
+          <div class="tool-when">HTML + Chart.js en GitHub Pages</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tools-section">
+      <h3>Para storytelling y presentaciones</h3>
+      <div class="tools">
+        <div class="tool">
+          <div class="tool-name">NotebookLM</div>
+          <div class="tool-when">Síntesis de fuentes · Audio overview</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">Napkin AI</div>
+          <div class="tool-when">Texto a visual automático</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">Gamma</div>
+          <div class="tool-when">Presentaciones desde prompt</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">Canva</div>
+          <div class="tool-when">Control visual total · Magic Design</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">PowerPoint</div>
+          <div class="tool-when">Designer con IA · Estándar corporativo</div>
+        </div>
+        <div class="tool">
+          <div class="tool-name">HTML custom</div>
+          <div class="tool-when">Como esta presentación · GitHub Pages</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 8: CÓMO SE GANA ============== -->
+<section class="slide slide-padding" data-slide="8">
+  <div class="stagger" style="height: 100%; display: flex; flex-direction: column;">
+    <div>
+      <div class="eyebrow">Cómo se gana</div>
+      <h2 style="font-size: clamp(2.5rem, 5vw, 4.2rem); margin-bottom: 0.8rem;">No basta vender.<br><span class="italic-serif">Hay que construir marca</span><br>y comunicarlo.</h2>
+      <p style="max-width: 70ch; font-size: 1.05rem;">El score compuesto refleja el rol gerencial completo: rentabilidad, marca, analítica y narrativa.</p>
+    </div>
+
+    <div class="score-viz">
+      <div class="score-row">
+        <div class="score-label">ROI financiero</div>
+        <div class="score-pct">35%</div>
+        <div class="score-bar"><div class="score-fill" style="width: 87.5%"></div></div>
+        <div class="score-desc">Eficiencia del presupuesto</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Brand Impact</div>
+        <div class="score-pct">30%</div>
+        <div class="score-bar"><div class="score-fill" style="width: 75%"></div></div>
+        <div class="score-desc">Equity + SOV relativo + engagement</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Calidad del Dashboard</div>
+        <div class="score-pct">20%</div>
+        <div class="score-bar"><div class="score-fill" style="width: 50%"></div></div>
+        <div class="score-desc">Rúbrica analítica · Cualquier herramienta</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Storytelling final</div>
+        <div class="score-pct">10%</div>
+        <div class="score-bar"><div class="score-fill" style="width: 25%"></div></div>
+        <div class="score-desc">Argumento, evidencia, recomendaciones</div>
+      </div>
+      <div class="score-row">
+        <div class="score-label">Bonus Innovación</div>
+        <div class="score-pct">5%</div>
+        <div class="score-bar"><div class="score-fill" style="width: 12.5%"></div></div>
+        <div class="score-desc">Pionero en adoptar diferenciación</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 3rem; padding: 1.5rem 2rem; background: var(--cream); border-left: 3px solid var(--gold);">
+      <p style="font-family: 'Fraunces', serif; font-style: italic; font-size: 1.2rem; color: var(--navy); margin: 0;">El ranking se actualiza después de cada jugada. La posición de hoy puede cambiar mañana. La constancia importa tanto como la velocidad.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 9: VINCULACIÓN CON UNIDADES ============== -->
+<section class="slide slide-padding" data-slide="9">
+  <div class="stagger">
+    <div class="eyebrow">No reemplaza la teoría — la activa</div>
+    <h2 style="font-size: clamp(2.2rem, 4.5vw, 3.8rem); margin-bottom: 0.8rem;">Cada unidad,<br><span class="italic-serif">una capa del juego.</span></h2>
+    <p style="max-width: 70ch; font-size: 1.05rem;">El simulador es transversal a las tres unidades. Cada concepto del syllabus tiene un momento donde se vuelve decisión real.</p>
+
+    <div class="unidades">
+      <div class="unidad">
+        <div class="unidad-num">UNIDAD 1 · 12 HORAS</div>
+        <h3>Fundamentos<br>+ IA Aplicada</h3>
+        <p>Las primeras rondas exigen justificar decisiones citando GA4, Firebase e Insights. Adoptar IA da multiplicadores reales.</p>
+        <div class="unidad-mech">Rondas 1 — 2</div>
+      </div>
+      <div class="unidad">
+        <div class="unidad-num">UNIDAD 2 · 12 HORAS</div>
+        <h3>Herramientas<br>y Dashboards</h3>
+        <p>Mitad del juego: cada equipo construye su dashboard y lo publica en GitHub Pages. EMIS y Legiscomex se vuelven inteligencia comprable.</p>
+        <div class="unidad-mech">Rondas 3 — 5</div>
+      </div>
+      <div class="unidad">
+        <div class="unidad-num">UNIDAD 3 · 8 HORAS</div>
+        <h3>Toma de<br>Decisiones</h3>
+        <p>Rondas finales: ROAS vs LTV, lectura del mercado competitivo, presentación storytelling con la herramienta de su elección.</p>
+        <div class="unidad-mech">Rondas 6 — 7</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 10: GITHUB COMO PORTAFOLIO ============== -->
+<section class="slide slide-padding" data-slide="10">
+  <div class="two-col stagger">
+    <div class="col-narrative">
+      <div class="eyebrow">El entregable que perdura</div>
+      <h2>GitHub<br>no es solo código.<br><span class="italic-serif">Es portafolio.</span></h2>
+      <p>Cada equipo crea su repositorio público. Allí va el dashboard, la presentación, la bitácora de decisiones, los datos exportados.</p>
+      <p>Al terminar el semestre, cada estudiante tiene un proyecto profesional demostrable, con URL pública, accesible para futuros empleadores.</p>
+      <p style="font-family: 'Fraunces', serif; font-style: italic; color: var(--gold); margin-top: 1.5rem; font-size: 1.1rem;">Esta presentación que están viendo está alojada exactamente igual que estarán los suyos.</p>
+    </div>
+
+    <div class="items">
+      <div class="item">
+        <div class="item-num">/</div>
+        <div>
+          <h4>README.md</h4>
+          <p>Presentación del equipo, marca asignada, estrategia general.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">/</div>
+        <div>
+          <h4>/dashboards</h4>
+          <p>Versiones del dashboard por ronda, publicadas vía GitHub Pages.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">/</div>
+        <div>
+          <h4>/decisiones</h4>
+          <p>Bitácora reflexiva: qué decidieron, por qué, qué pasó.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">/</div>
+        <div>
+          <h4>/datos</h4>
+          <p>CSVs exportados del simulador, organizados por ronda.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">/</div>
+        <div>
+          <h4>/presentaciones</h4>
+          <p>Presentaciones por ronda y storytelling final.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 11: CIERRE / SIGUIENTES PASOS ============== -->
+<section class="slide closing" data-slide="11">
+  <div class="closing-content stagger">
+    <div class="eyebrow" style="color: var(--gold-light);">Lo que viene</div>
+    <h2>Aprender marketing<br>tomando <span class="accent">decisiones de marketing.</span></h2>
+
+    <p style="font-family: 'Fraunces', serif; font-style: italic; font-size: 1.5rem; color: var(--teal-light); max-width: 50ch; line-height: 1.4;">Esta es la propuesta. La construimos juntos.</p>
+
+    <div class="closing-actions">
+      <div class="action-block">
+        <div class="action-num">01</div>
+        <h4>Hoy</h4>
+        <p>Validamos el concepto con ustedes. Sus aportes definen los detalles finales del juego.</p>
+      </div>
+      <div class="action-block">
+        <div class="action-num">02</div>
+        <h4>Próximas semanas</h4>
+        <p>Desarrollo en cinco sprints. Para la sesión 2 ya estará operativo el simulador.</p>
+      </div>
+      <div class="action-block">
+        <div class="action-num">03</div>
+        <h4>Semestre</h4>
+        <p>Siete rondas. Diez equipos. Un mercado vivo. Y al final, su portafolio profesional.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid rgba(200, 150, 62, 0.3); display: flex; justify-content: space-between; align-items: center; font-family: 'Geist Mono', monospace; font-size: 0.75rem; color: rgba(244, 241, 232, 0.5); letter-spacing: 0.1em;">
+      <div>UNIVERSIDAD DE LA SALLE · MAESTRÍA E-COMMERCE Y MARKETING DIGITAL</div>
+      <div style="color: var(--gold);">VISORIA · INTELLIGENCE</div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ============== NAVIGATION ============== -->
+<nav class="nav">
+  <div class="nav-left">
+    <span class="logo">DigitalMKT Arena</span>
+    <span>—</span>
+    <span>v2.0</span>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prev" aria-label="Anterior">‹</button>
+    <span class="counter" id="counter">01 / 11</span>
+    <button class="nav-btn" id="next" aria-label="Siguiente">›</button>
+    <button class="nav-btn" id="fullscreen" aria-label="Pantalla completa" style="margin-left: 0.5rem;">⛶</button>
+  </div>
+</nav>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const fsBtn = document.getElementById('fullscreen');
+let current = 0;
+const total = slides.length;
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function show(idx) {
+  if (idx < 0 || idx >= total) return;
+  slides[current].classList.remove('active');
+  current = idx;
+  slides[current].classList.add('active');
+  counter.textContent = `${pad(current + 1)} / ${pad(total)}`;
+  progress.style.width = `${((current + 1) / total) * 100}%`;
+}
+
+function next() { if (current < total - 1) show(current + 1); }
+function prev() { if (current > 0) show(current - 1); }
+
+nextBtn.addEventListener('click', next);
+prevBtn.addEventListener('click', prev);
+
+fsBtn.addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+  else if (e.key === 'Home') { show(0); }
+  else if (e.key === 'End') { show(total - 1); }
+  else if (e.key === 'f' || e.key === 'F') { fsBtn.click(); }
+});
+
+// Touch support
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) {
+    if (dx < 0) next();
+    else prev();
+  }
+});
+
+// Initialize progress
+progress.style.width = `${(1 / total) * 100}%`;
+</script>
+
+</body>
+</html>
