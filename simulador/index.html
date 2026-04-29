@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalMKT Arena · Simulador Gerencial</title>
+  <meta name="description" content="Simulador competitivo de Analítica Digital de la Maestría EMD de la Universidad de La Salle. VISORIA Intelligence.">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark"></span>
+        <span class="brand-text">
+          <strong>DigitalMKT Arena</strong>
+          <span>VISORIA · Sprint 1</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="../index.html">Documento</a>
+        <a href="https://github.com/jfrubiano72/digitalmkt-arena" target="_blank" rel="noopener">Repositorio</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow">Maestría EMD · Universidad de La Salle</span>
+            <h1 class="hero-title">
+              Decisiones de marketing<br>
+              <span class="line-2">en un mercado vivo.</span>
+            </h1>
+            <p class="lead">
+              Un simulador gerencial donde cada equipo asume el liderazgo de una marca colombiana
+              real, asigna presupuesto entre diez categorías de inversión y compite frente a sus pares
+              en un mercado dinámico que reacciona a cada decisión.
+            </p>
+
+            <div class="hero-meta">
+              <div class="hero-meta-item">
+                <span class="label">Cohorte</span>
+                <span class="value" id="hero-cohorte">Cargando…</span>
+              </div>
+              <div class="hero-meta-item">
+                <span class="label">Marcas en juego</span>
+                <span class="value" id="hero-marcas">—</span>
+              </div>
+              <div class="hero-meta-item">
+                <span class="label">Rondas planificadas</span>
+                <span class="value" id="hero-rondas">—</span>
+              </div>
+              <div class="hero-meta-item">
+                <span class="label">Presupuesto inicial</span>
+                <span class="value" id="hero-presupuesto">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-cta-stack">
+            <a href="registro.html" class="cta-card primary">
+              <span class="cta-eyebrow">
+                <span>Comenzar</span>
+                <span class="cta-arrow">→</span>
+              </span>
+              <h3>Registrar nuevo equipo</h3>
+              <p>Crea tu equipo, recibe tu marca asignada y obtén el código de acceso para todo el semestre.</p>
+            </a>
+
+            <a href="acceso.html" class="cta-card">
+              <span class="cta-eyebrow">
+                <span>Ya tengo equipo</span>
+                <span class="cta-arrow">→</span>
+              </span>
+              <h3>Acceder con código</h3>
+              <p>Si tu equipo ya está registrado, ingresa con tu código de acceso para ver tu panel.</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer-inner">
+      <span>© 2026 VISORIA Intelligence · Mg. Javier F. Rubiano Espinosa</span>
+      <span id="footer-status">Backend conectado</span>
+    </div>
+  </footer>
+
+  <script src="js/api-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    (async function () {
+      try {
+        const cfg = await DMKTApi.obtenerConfigJuego();
+        document.getElementById('hero-cohorte').textContent = cfg.cohorte.nombre || cfg.cohorte.cohorte_id;
+        document.getElementById('hero-rondas').textContent =
+          (cfg.parametros && cfg.parametros.num_rondas && cfg.parametros.num_rondas.valor) || cfg.cohorte.num_rondas || '—';
+        const presup = (cfg.parametros && cfg.parametros.presupuesto_inicial && cfg.parametros.presupuesto_inicial.valor) || cfg.cohorte.presupuesto_inicial;
+        document.getElementById('hero-presupuesto').textContent =
+          presup ? '$ ' + DMKTUtils.formatearAbreviado(presup) + ' COP' : '—';
+
+        const marcasResp = await DMKTApi.listarMarcasDisponibles();
+        const totalLibres = (marcasResp.marcas_disponibles || marcasResp.marcas || []).length;
+        try {
+          const equipos = await DMKTApi.listarEquiposPorCohorte();
+          const tomadas = equipos.length;
+          document.getElementById('hero-marcas').textContent = (totalLibres + tomadas) + ' · ' + totalLibres + ' libres';
+        } catch (e) {
+          document.getElementById('hero-marcas').textContent = totalLibres + ' libres';
+        }
+      } catch (e) {
+        document.getElementById('hero-cohorte').textContent = 'Sin conexión';
+        document.getElementById('footer-status').textContent = 'Backend desconectado';
+        console.warn('Error cargando configuración:', e);
+      }
+    })();
+
+    if (DMKTAuth.haySesion()) {
+      const sesion = DMKTAuth.leerSesion();
+      const stack = document.querySelector('.hero-cta-stack');
+      const acceso = document.createElement('a');
+      acceso.href = 'panel.html';
+      acceso.className = 'cta-card';
+      acceso.style.borderColor = 'var(--gold)';
+      acceso.style.background = 'var(--gold-pale)';
+      acceso.innerHTML =
+        '<span class="cta-eyebrow gold" style="color: var(--gold);">' +
+          '<span>Sesión activa</span>' +
+          '<span class="cta-arrow">→</span>' +
+        '</span>' +
+        '<h3>Volver al panel de ' + DMKTUtils.escapeHtml(sesion.equipo.nombre_equipo) + '</h3>' +
+        '<p>Tu sesión sigue activa en este navegador. Continúa donde lo dejaste.</p>';
+      stack.insertBefore(acceso, stack.firstChild);
+    }
+  </script>
+
+</body>
+</html>

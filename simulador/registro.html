@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar equipo · DigitalMKT Arena</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark"></span>
+        <span class="brand-text">
+          <strong>DigitalMKT Arena</strong>
+          <span>VISORIA · Sprint 1</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Inicio</a>
+        <a href="acceso.html">Acceder</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div class="container container-narrow">
+        <div class="page-header-inner">
+          <span class="breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span class="sep">/</span>
+            <span>Registro de equipo</span>
+          </span>
+          <h1>Registra tu equipo</h1>
+          <p class="lead">
+            Una vez completes el registro, el sistema te asignará una marca real colombiana
+            de manera aleatoria entre las disponibles, y recibirás un código de acceso único
+            que será tu llave durante todo el semestre.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-narrow">
+      <form id="form-registro" class="form-card" novalidate>
+
+        <div class="form-section">
+          <span class="form-section-title">1 · Identidad del equipo</span>
+
+          <div class="field">
+            <label for="nombre_equipo">Nombre del equipo</label>
+            <input type="text" id="nombre_equipo" name="nombre_equipo" required
+                   placeholder="Ej. Equipo Azul" maxlength="60" autocomplete="off">
+            <span class="hint">Elige un nombre fácil de recordar. Se usa en el ranking público.</span>
+          </div>
+
+          <div class="field">
+            <label for="integrantes">Integrantes</label>
+            <textarea id="integrantes" name="integrantes" required rows="3"
+                      placeholder="Ana Pérez, Juan Gómez, Sofía Ruiz"></textarea>
+            <span class="hint">Nombres separados por coma. Mínimo 2, máximo 5 integrantes.</span>
+          </div>
+
+          <div class="field">
+            <label for="email_lider">Correo del líder de equipo</label>
+            <input type="email" id="email_lider" name="email_lider" required
+                   placeholder="ejemplo@unisalle.edu.co" autocomplete="email">
+            <span class="hint">El docente usará este correo para comunicaciones del simulador.</span>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <span class="form-section-title">2 · Infraestructura del equipo (opcional)</span>
+
+          <div class="field">
+            <label for="repo_github">Repositorio GitHub del equipo</label>
+            <input type="url" id="repo_github" name="repo_github"
+                   placeholder="https://github.com/tu-equipo/digitalmkt"
+                   pattern="https?://.+">
+            <span class="hint">Si ya creaste el repositorio del equipo, pégalo aquí. Puedes agregarlo después.</span>
+          </div>
+
+          <div class="field">
+            <label for="url_dashboard">URL del dashboard publicado</label>
+            <input type="url" id="url_dashboard" name="url_dashboard"
+                   placeholder="https://tu-equipo.github.io/digitalmkt/"
+                   pattern="https?://.+">
+            <span class="hint">Cuando publiques tu dashboard en GitHub Pages, agrégalo aquí.</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-submit">
+            <span id="btn-text">Registrar equipo</span>
+          </button>
+          <a href="index.html" class="btn btn-ghost">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer-inner">
+      <span>© 2026 VISORIA Intelligence · Mg. Javier F. Rubiano Espinosa</span>
+      <span id="footer-status">Sprint 1 · Fundación</span>
+    </div>
+  </footer>
+
+  <div id="modal-exito" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal">
+      <span class="modal-eyebrow">Registro exitoso</span>
+      <h2>Tu equipo está listo</h2>
+      <p style="color: var(--ink-soft); margin-top: var(--space-2);">
+        Marca asignada: <strong id="modal-marca-nombre" style="color: var(--navy);">—</strong>
+      </p>
+
+      <div class="modal-body">
+        <p class="caption" style="margin-bottom: var(--space-2);">CÓDIGO DE ACCESO:</p>
+        <div class="code-display" id="codigo-display">—</div>
+
+        <div class="code-actions">
+          <button type="button" class="btn btn-secondary" id="btn-copiar">Copiar al portapapeles</button>
+          <span class="copy-feedback" id="copy-feedback">¡Copiado!</span>
+        </div>
+      </div>
+
+      <div class="modal-warning">
+        <strong style="margin-right: 4px;">Importante:</strong>
+        Guarda este código en un lugar seguro. Es la única forma de acceder al panel del equipo
+        durante el semestre. Por seguridad no se mostrará de nuevo en consultas posteriores.
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary" id="btn-continuar">
+          Continuar al panel del equipo →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    const form = document.getElementById('form-registro');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnText = document.getElementById('btn-text');
+    const modal = document.getElementById('modal-exito');
+    const codigoDisplay = document.getElementById('codigo-display');
+    const marcaNombre = document.getElementById('modal-marca-nombre');
+    const btnCopiar = document.getElementById('btn-copiar');
+    const copyFeedback = document.getElementById('copy-feedback');
+    const btnContinuar = document.getElementById('btn-continuar');
+
+    let equipoCreado = null;
+    let codigoCreado = null;
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const nombreEquipo = document.getElementById('nombre_equipo').value.trim();
+      const integrantesRaw = document.getElementById('integrantes').value.trim();
+      const emailLider = document.getElementById('email_lider').value.trim();
+      const repoGithub = document.getElementById('repo_github').value.trim();
+      const urlDashboard = document.getElementById('url_dashboard').value.trim();
+
+      if (!nombreEquipo) {
+        DMKTUtils.toast('El nombre del equipo es obligatorio', 'error');
+        return;
+      }
+      if (!integrantesRaw) {
+        DMKTUtils.toast('Lista al menos un integrante del equipo', 'error');
+        return;
+      }
+      if (!emailLider || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailLider)) {
+        DMKTUtils.toast('El correo del líder no es válido', 'error');
+        return;
+      }
+
+      const integrantes = integrantesRaw
+        .split(/[,;]/)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      if (integrantes.length < 1) {
+        DMKTUtils.toast('Lista al menos un integrante', 'error');
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      btnText.textContent = 'Registrando…';
+
+      try {
+        const payload = {
+          nombre_equipo: nombreEquipo,
+          integrantes: integrantes,
+          email_lider: emailLider
+        };
+        if (repoGithub) payload.repo_github = repoGithub;
+        if (urlDashboard) payload.url_dashboard = urlDashboard;
+
+        const data = await DMKTApi.crearEquipo(payload);
+        equipoCreado = data.equipo;
+        codigoCreado = data.credenciales.codigo_acceso;
+
+        codigoDisplay.textContent = codigoCreado;
+        marcaNombre.textContent = data.marca.nombre_marca;
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+      } catch (err) {
+        DMKTUtils.toast(err.message || 'Error al registrar el equipo', 'error', 'No se pudo crear el equipo');
+        btnSubmit.disabled = false;
+        btnText.textContent = 'Registrar equipo';
+      }
+    });
+
+    btnCopiar.addEventListener('click', async function () {
+      const ok = await DMKTUtils.copiarAlPortapapeles(codigoCreado);
+      if (ok) {
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 1800);
+      } else {
+        DMKTUtils.toast('No fue posible copiar. Selecciona el código manualmente.', 'warn');
+      }
+    });
+
+    btnContinuar.addEventListener('click', function () {
+      DMKTAuth.guardarSesion(equipoCreado, codigoCreado);
+      window.location.href = 'panel.html';
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceder · DigitalMKT Arena</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark"></span>
+        <span class="brand-text">
+          <strong>DigitalMKT Arena</strong>
+          <span>VISORIA · Sprint 1</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Inicio</a>
+        <a href="registro.html">Registrar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div class="container container-narrow">
+        <div class="page-header-inner">
+          <span class="breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span class="sep">/</span>
+            <span>Acceso del equipo</span>
+          </span>
+          <h1>Accede a tu panel</h1>
+          <p class="lead">
+            Ingresa el código de acceso que recibiste al registrar tu equipo. El código tiene
+            el formato <code style="font-family: var(--font-mono); background: var(--bone); padding: 2px 6px; border-radius: 4px;">NOMBRE-XXXX</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-narrow">
+      <form id="form-acceso" class="form-card" novalidate>
+        <div class="form-section">
+          <span class="form-section-title">Credencial del equipo</span>
+
+          <div class="field">
+            <label for="codigo_acceso">Código de acceso</label>
+            <input type="text" id="codigo_acceso" name="codigo_acceso" required
+                   class="code-input"
+                   placeholder="EQUIPO-XXXX"
+                   autocomplete="off"
+                   spellcheck="false"
+                   autocapitalize="characters">
+            <span class="hint">El código no distingue mayúsculas pero usa el formato exacto que recibiste.</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-submit">
+            <span id="btn-text">Acceder al panel</span>
+          </button>
+          <a href="registro.html" class="btn btn-ghost">¿Aún no tienes equipo? Regístrate</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer-inner">
+      <span>© 2026 VISORIA Intelligence · Mg. Javier F. Rubiano Espinosa</span>
+      <span>Sprint 1 · Fundación</span>
+    </div>
+  </footer>
+
+  <script src="js/api-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    if (DMKTAuth.haySesion()) {
+      window.location.href = 'panel.html';
+    }
+
+    const form = document.getElementById('form-acceso');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnText = document.getElementById('btn-text');
+    const inputCodigo = document.getElementById('codigo_acceso');
+
+    inputCodigo.addEventListener('input', function () {
+      this.value = this.value.toUpperCase();
+    });
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const codigo = inputCodigo.value.trim().toUpperCase();
+
+      if (!codigo) {
+        DMKTUtils.toast('Ingresa tu código de acceso', 'error');
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      btnText.textContent = 'Verificando…';
+
+      try {
+        const data = await DMKTApi.autenticarEquipo(codigo);
+        DMKTAuth.guardarSesion(data.equipo, codigo);
+        DMKTUtils.toast('Bienvenidos de vuelta, ' + data.equipo.nombre_equipo, 'ok');
+        setTimeout(() => { window.location.href = 'panel.html'; }, 600);
+      } catch (err) {
+        DMKTUtils.toast(err.message || 'Código inválido', 'error', 'No fue posible iniciar sesión');
+        btnSubmit.disabled = false;
+        btnText.textContent = 'Acceder al panel';
+      }
+    });
+  </script>
+
+</body>
+</html>

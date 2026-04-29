@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel del equipo · DigitalMKT Arena</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark"></span>
+        <span class="brand-text">
+          <strong>DigitalMKT Arena</strong>
+          <span>VISORIA · Sprint 1</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <span class="sprint-badge">Sprint 1 · Activo</span>
+        <a href="#" id="btn-cerrar-sesion">Cerrar sesión</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div id="loader" class="loading">
+      <span class="spinner"></span>
+      <span>Cargando datos del equipo…</span>
+    </div>
+
+    <div id="panel-content" class="hidden">
+
+      <div class="page-header">
+        <div class="container">
+          <div class="page-header-inner">
+            <span class="breadcrumb">
+              <a href="index.html">Inicio</a>
+              <span class="sep">/</span>
+              <span>Panel del equipo</span>
+              <span class="sep">/</span>
+              <span id="bc-equipo">—</span>
+            </span>
+            <h1>Panel de <span id="title-equipo" class="italic-display" style="color: var(--teal);">—</span></h1>
+            <p class="lead">
+              Estos son los datos iniciales de tu equipo para el Sprint 1. Desde aquí podrás
+              acceder a las herramientas de inteligencia de mercado de tu marca y, en próximos
+              sprints, ejecutar tus jugadas de cada ronda.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+
+        <!-- BRAND CARD -->
+        <div class="brand-card fade-in-up delay-1">
+          <div class="brand-card-inner">
+            <span class="brand-tag">Marca asignada</span>
+            <h2 class="brand-name" id="brand-name">—</h2>
+            <p class="brand-tagline" id="brand-sector">—</p>
+            <p class="brand-description" id="brand-description">—</p>
+
+            <div class="brand-meta-grid">
+              <div>
+                <div class="label">Razón social</div>
+                <div class="value" id="brand-razon">—</div>
+              </div>
+              <div>
+                <div class="label">NIT</div>
+                <div class="value" id="brand-nit">—</div>
+              </div>
+              <div>
+                <div class="label">Categoría del simulador</div>
+                <div class="value" id="brand-categoria">—</div>
+              </div>
+              <div>
+                <div class="label">Sector EMIS</div>
+                <div class="value" id="brand-sector-emis">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RETO -->
+        <div class="challenge-card fade-in-up delay-2">
+          <span class="card-eyebrow">Tu reto estratégico</span>
+          <p id="challenge-text">—</p>
+        </div>
+
+        <!-- GRID PRINCIPAL -->
+        <div class="panel-grid" style="margin-top: var(--space-6);">
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+
+            <div class="card light fade-in-up delay-2">
+              <div class="card-eyebrow">Estado actual del equipo</div>
+              <h3 style="margin-bottom: var(--space-4);">Métricas iniciales</h3>
+
+              <div class="kpi-grid">
+                <div class="kpi highlight">
+                  <span class="kpi-label">Presupuesto disponible</span>
+                  <div>
+                    <span class="kpi-value" id="kpi-presupuesto">—</span>
+                  </div>
+                  <span class="kpi-meta" id="kpi-presupuesto-meta">COP</span>
+                </div>
+
+                <div class="kpi">
+                  <span class="kpi-label">Brand Equity</span>
+                  <div>
+                    <span class="kpi-value" id="kpi-brand">—</span>
+                    <span class="kpi-suffix">/100</span>
+                  </div>
+                  <span class="kpi-meta">Línea base</span>
+                </div>
+
+                <div class="kpi">
+                  <span class="kpi-label">Ronda actual</span>
+                  <div>
+                    <span class="kpi-value" id="kpi-ronda">—</span>
+                    <span class="kpi-suffix" id="kpi-ronda-total">/—</span>
+                  </div>
+                  <span class="kpi-meta">Aún sin jugar</span>
+                </div>
+
+                <div class="kpi">
+                  <span class="kpi-label">Posición ranking</span>
+                  <div>
+                    <span class="kpi-value">—</span>
+                  </div>
+                  <span class="kpi-meta">Disponible en R2</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card light fade-in-up delay-3">
+              <div class="card-eyebrow">Inteligencia de mercado</div>
+              <h3 style="margin-bottom: var(--space-2);">Investiga tu marca</h3>
+              <p style="color: var(--ink-soft); font-size: 14px; margin-bottom: var(--space-4);">
+                Consulta las plataformas profesionales para obtener estados financieros, exportaciones,
+                importaciones y análisis sectorial. Usa estos datos para sustentar tus decisiones.
+              </p>
+
+              <div class="external-links">
+                <a href="#" target="_blank" rel="noopener" id="link-emis" class="ext-link">
+                  <span class="label">Inteligencia financiera</span>
+                  <span class="name">EMIS</span>
+                  <span class="desc">Estados financieros, indicadores y análisis sectorial.</span>
+                </a>
+                <a href="#" target="_blank" rel="noopener" id="link-legiscomex" class="ext-link">
+                  <span class="label">Comercio exterior</span>
+                  <span class="name">Legiscomex</span>
+                  <span class="desc">Importaciones, exportaciones y posiciones arancelarias.</span>
+                </a>
+              </div>
+
+              <div style="margin-top: var(--space-5); padding: var(--space-4); background: var(--bone); border-radius: var(--radius-sm); font-size: 13px; color: var(--ink-soft);">
+                <strong style="color: var(--navy);">Pista del docente:</strong>
+                comienza con los ingresos del último año fiscal y compáralos con sus dos competidores
+                directos. Esos números van a ser críticos para tu primera jugada.
+              </div>
+            </div>
+
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+
+            <div class="card light fade-in-up delay-3">
+              <div class="card-eyebrow">Tu equipo</div>
+              <h3 id="equipo-nombre" style="margin-bottom: var(--space-4);">—</h3>
+
+              <ul class="info-list">
+                <li>
+                  <span class="label">ID del equipo</span>
+                  <span class="value" id="equipo-id" style="font-family: var(--font-mono);">—</span>
+                </li>
+                <li>
+                  <span class="label">Integrantes</span>
+                  <span class="value" id="equipo-integrantes">—</span>
+                </li>
+                <li>
+                  <span class="label">Líder</span>
+                  <span class="value" id="equipo-lider">—</span>
+                </li>
+                <li>
+                  <span class="label">Repositorio GitHub</span>
+                  <span class="value" id="equipo-repo">—</span>
+                </li>
+                <li>
+                  <span class="label">Dashboard publicado</span>
+                  <span class="value" id="equipo-dashboard">—</span>
+                </li>
+                <li>
+                  <span class="label">Fecha de registro</span>
+                  <span class="value" id="equipo-fecha">—</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="card dark fade-in-up delay-4">
+              <div class="card-eyebrow">Cohorte</div>
+              <h3 id="cohorte-nombre" style="margin-bottom: var(--space-4);">—</h3>
+
+              <ul class="info-list" style="color: white;">
+                <li style="border-color: rgba(255,255,255,0.1);">
+                  <span class="label" style="color: rgba(255,255,255,0.5);">Semestre</span>
+                  <span class="value" id="cohorte-semestre" style="color: white;">—</span>
+                </li>
+                <li style="border-color: rgba(255,255,255,0.1);">
+                  <span class="label" style="color: rgba(255,255,255,0.5);">Fecha inicio</span>
+                  <span class="value" id="cohorte-inicio" style="color: white;">—</span>
+                </li>
+                <li style="border-color: rgba(255,255,255,0.1);">
+                  <span class="label" style="color: rgba(255,255,255,0.5);">Fecha fin</span>
+                  <span class="value" id="cohorte-fin" style="color: white;">—</span>
+                </li>
+                <li style="border-color: rgba(255,255,255,0.1);">
+                  <span class="label" style="color: rgba(255,255,255,0.5);">Total rondas</span>
+                  <span class="value" id="cohorte-rondas" style="color: white;">—</span>
+                </li>
+                <li style="border-bottom: none;">
+                  <span class="label" style="color: rgba(255,255,255,0.5);">Docente</span>
+                  <span class="value" id="cohorte-docente" style="color: white;">—</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- AVISO SPRINT 2 -->
+        <div class="card fade-in-up delay-4" style="margin-top: var(--space-6); background: var(--gold-pale); border-color: var(--gold-soft);">
+          <div style="display: flex; gap: var(--space-4); align-items: center; flex-wrap: wrap; justify-content: space-between;">
+            <div>
+              <div class="card-eyebrow" style="color: var(--gold);">Próximamente · Sprint 2</div>
+              <h3 style="margin-bottom: var(--space-2);">El motor de jugada se activa pronto</h3>
+              <p style="color: var(--ink-soft); font-size: 14px; max-width: 56ch;">
+                En el Sprint 2 podrás asignar presupuesto a las 10 categorías de decisión, ver el
+                resultado de cada ronda y observar tu posición en el ranking dinámico jugada por jugada.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer-inner">
+      <span>© 2026 VISORIA Intelligence · Mg. Javier F. Rubiano Espinosa</span>
+      <span id="footer-status">Sprint 1 · Fundación</span>
+    </div>
+  </footer>
+
+  <script src="js/api-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    if (!DMKTAuth.haySesion()) {
+      window.location.href = 'acceso.html';
+    }
+
+    const loader = document.getElementById('loader');
+    const panelContent = document.getElementById('panel-content');
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value || '—';
+    }
+
+    function setLink(id, url) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (url && /^https?:\/\//.test(url)) {
+        el.innerHTML = '<a href="' + DMKTUtils.escapeHtml(url) + '" target="_blank" rel="noopener" style="color: var(--teal);">' + DMKTUtils.escapeHtml(url) + '</a>';
+      } else {
+        el.textContent = '— sin definir —';
+        el.style.color = 'var(--ink-muted)';
+      }
+    }
+
+    function setExtLink(id, url) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (url && /^https?:\/\//.test(url)) {
+        el.href = url;
+      } else {
+        el.style.opacity = '0.5';
+        el.style.pointerEvents = 'none';
+        el.removeAttribute('href');
+      }
+    }
+
+    (async function () {
+      try {
+        const data = await DMKTAuth.refrescarSesion();
+        const equipo = data.equipo;
+        const marca = data.marca || {};
+        const cohorte = data.cohorte || {};
+        const config = data.config || {};
+
+        setText('bc-equipo', equipo.nombre_equipo);
+        setText('title-equipo', equipo.nombre_equipo);
+
+        setText('brand-name', marca.nombre_marca);
+        setText('brand-sector', marca.sector || marca.sector_emis || '—');
+        setText('brand-description', marca.descripcion_breve);
+        setText('brand-razon', marca.razon_social);
+        setText('brand-nit', marca.nit);
+        setText('brand-categoria', marca.categoria_doc);
+        setText('brand-sector-emis', marca.sector_emis);
+
+        setText('challenge-text', marca.reto_estrategico);
+
+        const presupuesto = Number(equipo.presupuesto_actual) || 0;
+        document.getElementById('kpi-presupuesto').textContent = DMKTUtils.formatearAbreviado(presupuesto);
+        document.getElementById('kpi-presupuesto-meta').textContent = DMKTUtils.formatearCOP(presupuesto) + ' COP';
+
+        setText('kpi-brand', equipo.brand_equity);
+        setText('kpi-ronda', equipo.ronda_actual || 0);
+
+        const totalRondas = (config.parametros && config.parametros.num_rondas)
+          ? config.parametros.num_rondas.valor
+          : (cohorte.num_rondas || '—');
+        document.getElementById('kpi-ronda-total').textContent = '/' + totalRondas;
+
+        setExtLink('link-emis', marca.url_emis);
+        setExtLink('link-legiscomex', marca.url_legiscomex);
+
+        setText('equipo-nombre', equipo.nombre_equipo);
+        setText('equipo-id', equipo.equipo_id);
+        const integrantesArr = (equipo.integrantes || '').split(/[;,]/).map(s => s.trim()).filter(Boolean);
+        setText('equipo-integrantes', integrantesArr.join(' · '));
+        setText('equipo-lider', equipo.email_lider);
+        setLink('equipo-repo', equipo.repo_github);
+        setLink('equipo-dashboard', equipo.url_dashboard);
+        setText('equipo-fecha', DMKTUtils.formatearFecha(equipo.fecha_registro));
+
+        setText('cohorte-nombre', cohorte.nombre);
+        setText('cohorte-semestre', cohorte.semestre);
+        setText('cohorte-inicio', DMKTUtils.formatearFecha(cohorte.fecha_inicio));
+        setText('cohorte-fin', DMKTUtils.formatearFecha(cohorte.fecha_fin));
+        setText('cohorte-rondas', cohorte.num_rondas);
+        setText('cohorte-docente', cohorte.docente);
+
+        loader.classList.add('hidden');
+        panelContent.classList.remove('hidden');
+
+      } catch (err) {
+        console.error(err);
+        loader.innerHTML =
+          '<div style="text-align: center; padding: var(--space-7);">' +
+            '<h3 style="margin-bottom: var(--space-3);">No se pudieron cargar tus datos</h3>' +
+            '<p style="color: var(--ink-soft); margin-bottom: var(--space-4);">' +
+              DMKTUtils.escapeHtml(err.message || 'Error desconocido') +
+            '</p>' +
+            '<a href="acceso.html" class="btn btn-primary">Volver a acceder</a>' +
+          '</div>';
+
+        if (err.codigo === 'ERROR_HANDLER' || /inválido|no encontrado|no está activo/i.test(err.message || '')) {
+          DMKTAuth.cerrarSesion();
+        }
+      }
+    })();
+
+    document.getElementById('btn-cerrar-sesion').addEventListener('click', function (e) {
+      e.preventDefault();
+      const ok = confirm('¿Cerrar sesión? Necesitarás tu código de acceso para volver a entrar.');
+      if (ok) {
+        DMKTAuth.cerrarSesion();
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+
+</body>
+</html>
