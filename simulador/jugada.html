@@ -772,7 +772,7 @@
       document.getElementById('resultado-ventas').textContent = formatCOP(r.ventas);
       document.getElementById('resultado-roas').textContent = r.roas + 'x';
       document.getElementById('resultado-conversiones').textContent = Number(r.conversiones).toLocaleString('es-CO');
-      document.getElementById('resultado-brand').textContent = j.brand_equity_despues + '/100';
+      document.getElementById('resultado-brand').textContent = Number(j.brand_equity_despues).toFixed(1) + '/100';
       document.getElementById('resultado-seguidores').textContent = '+' + Number(r.seguidores).toLocaleString('es-CO');
       document.getElementById('resultado-presupuesto').textContent = formatAbreviado(j.presupuesto_despues);
       document.getElementById('resultado-ronda').textContent = 'R' + j.ronda;
