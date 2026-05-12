@@ -252,6 +252,14 @@ h3, .h3 {
 .btn-ghost { background: transparent; color: var(--ink-soft); padding: 10px 14px; }
 .btn-ghost:hover { color: var(--navy); background: var(--bone); }
 
+.btn-gold {
+  background: var(--gold); color: white; border-color: var(--gold);
+}
+.btn-gold:not(:disabled):hover {
+  background: #B5832E; transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(200, 150, 62, 0.25);
+}
+
 .toast-stack {
   position: fixed; top: 80px; right: var(--space-5); z-index: 100;
   display: flex; flex-direction: column; gap: var(--space-2); max-width: 420px;
