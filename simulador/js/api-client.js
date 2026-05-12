@@ -119,6 +119,11 @@
       return get('obtenerRanking', { cohorte_id: cohorteId || DEFAULT_COHORTE_ID });
     },
 
+    /** Obtiene el dashboard completo del docente. Sprint 2. */
+    obtenerDashboardDocente: function (cohorteId) {
+      return get('obtenerDashboardDocente', { cohorte_id: cohorteId || DEFAULT_COHORTE_ID });
+    },
+
     DEFAULT_COHORTE_ID: DEFAULT_COHORTE_ID,
     API_URL: API_URL
   };
