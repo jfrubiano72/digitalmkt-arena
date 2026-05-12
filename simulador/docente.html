@@ -622,7 +622,7 @@
               '</div>' +
               '<div class="podio-stat">' +
                 '<span class="label">Brand</span>' +
-                '<span class="value">' + eq.brand_equity + '/100</span>' +
+                '<span class="value">' + Number(eq.brand_equity || 0).toFixed(1) + '/100</span>' +
               '</div>' +
               '<div class="podio-stat">' +
                 '<span class="label">Ronda</span>' +
@@ -652,7 +652,7 @@
             '<td class="nombre-equipo">' + escapeHtml(eq.nombre_equipo) + '</td>' +
             '<td class="num">R' + eq.ronda_actual + '</td>' +
             '<td class="num">' + formatAbreviado(eq.ventas_acumuladas) + '</td>' +
-            '<td class="num">' + eq.brand_equity + '/100</td>' +
+            '<td class="num">' + Number(eq.brand_equity || 0).toFixed(1) + '/100</td>' +
             '<td class="num">' + formatNumero(eq.seguidores_total) + '</td>' +
             '<td class="num">' + formatAbreviado(eq.presupuesto_actual) + '</td>' +
             '<td class="num">' + formatAbreviado(eq.score) + '</td>' +
