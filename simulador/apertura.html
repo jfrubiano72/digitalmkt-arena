@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apertura · DigitalMKT Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B2545;
+      --navy-deep: #06182E;
+      --teal: #137DC5;
+      --teal-soft: #4FA8DD;
+      --gold: #C8963E;
+      --gold-soft: #E0B364;
+      --paper: #F4F1EA;
+      --bone: #E8E2D5;
+      --ink: #1A2332;
+      --ink-soft: #5A6878;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--paper);
+    }
+
+    .slides-container {
+      width: 100vw; height: 100vh;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      padding: 8vh 10vw;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .slide.active { opacity: 1; pointer-events: auto; }
+
+    /* ===== SLIDE 1 ===== */
+    .slide-1 {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+      color: white;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide-1::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(200, 150, 62, 0.2), transparent 60%);
+    }
+    .slide-1::after {
+      content: '';
+      position: absolute;
+      bottom: -200px; left: -100px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(19, 125, 197, 0.15), transparent 60%);
+    }
+    .slide-1 .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 14px; letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .slide-1 h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: white;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .slide-1 h1 em {
+      font-style: italic;
+      color: var(--gold-soft);
+      font-weight: 400;
+    }
+    .slide-1 .subtitle {
+      font-size: clamp(18px, 2vw, 24px);
+      color: rgba(255,255,255,0.78);
+      max-width: 60ch;
+      line-height: 1.5;
+      margin-bottom: 60px;
+      position: relative;
+    }
+    .slide-1 .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      max-width: 1000px;
+      position: relative;
+    }
+    .slide-1 .meta-item {
+      display: flex; flex-direction: column;
+    }
+    .slide-1 .meta-item .label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px; letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+    .slide-1 .meta-item .value {
+      font-family: 'Fraunces', serif;
+      font-size: 26px;
+      font-weight: 500;
+      color: white;
+    }
+    .slide-1 .meta-item .value em {
+      font-style: italic;
+      color: var(--gold-soft);
+      font-weight: 400;
+    }
+
+    /* ===== SLIDE 2 ===== */
+    .slide-2 {
+      background: var(--paper);
+      color: var(--navy);
+      justify-content: center;
+    }
+    .slide-2 .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 14px; letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+    .slide-2 h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 50px;
+      max-width: 24ch;
+      line-height: 1.1;
+    }
+    .slide-2 h2 em { font-style: italic; color: var(--teal); }
+    .slide-2 .url-card {
+      background: var(--navy);
+      color: white;
+      padding: 40px 50px;
+      border-radius: 16px;
+      max-width: 900px;
+      box-shadow: 0 20px 60px rgba(11, 37, 69, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .slide-2 .url-card::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(200, 150, 62, 0.25), transparent 60%);
+    }
+    .slide-2 .url-card .step {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .slide-2 .url-card .url-text {
+      font-family: 'Geist Mono', monospace;
+      font-size: clamp(20px, 2.6vw, 36px);
+      font-weight: 500;
+      color: white;
+      letter-spacing: 0.02em;
+      word-break: break-all;
+      line-height: 1.3;
+      position: relative;
+    }
+    .slide-2 .url-card .url-text .highlight {
+      color: var(--gold-soft);
+    }
+    .slide-2 .url-card .instruction {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      font-size: 18px;
+      color: rgba(255,255,255,0.85);
+      position: relative;
+    }
+
+    /* ===== SLIDE 3 ===== */
+    .slide-3 {
+      background: var(--paper);
+      color: var(--navy);
+      justify-content: center;
+    }
+    .slide-3 .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 14px; letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+    .slide-3 h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 50px;
+      line-height: 1.1;
+    }
+    .slide-3 h2 em { font-style: italic; color: var(--teal); }
+    .slide-3 .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      max-width: 1200px;
+    }
+    .slide-3 .rule {
+      background: white;
+      border: 1px solid var(--bone);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+    }
+    .slide-3 .rule.gold {
+      background: linear-gradient(160deg, #FFF7E8 0%, white 60%);
+      border-color: var(--gold-soft);
+    }
+    .slide-3 .rule-number {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .slide-3 .rule-title {
+      font-family: 'Fraunces', serif;
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+    .slide-3 .rule-desc {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+    .slide-3 .rule-desc strong { color: var(--navy); }
+
+    /* ===== NAVEGACIÓN ===== */
+    .nav-bar {
+      position: fixed;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: 20px;
+      background: rgba(11, 37, 69, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 14px 24px;
+      border-radius: 100px;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: white;
+    }
+    .nav-btn:disabled {
+      opacity: 0.3; cursor: not-allowed;
+    }
+    .nav-indicator {
+      display: flex; gap: 8px;
+    }
+    .nav-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      transition: background 0.2s ease;
+    }
+    .nav-dot.active {
+      background: var(--gold);
+      width: 28px;
+      border-radius: 100px;
+    }
+    .nav-counter {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.1em;
+    }
+    .nav-fullscreen {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .nav-fullscreen:hover {
+      background: var(--gold); border-color: var(--gold);
+    }
+
+    .nav-hint {
+      position: fixed;
+      top: 30px; right: 30px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      z-index: 50;
+    }
+    .slide-1 ~ .nav-hint { color: rgba(255,255,255,0.5); }
+  </style>
+</head>
+<body>
+
+  <div class="nav-hint" id="nav-hint">Usa ← → o haz click en los controles</div>
+
+  <div class="slides-container">
+
+    <!-- SLIDE 1: Bienvenida + contexto -->
+    <section class="slide slide-1 active" data-slide="1">
+      <div class="eyebrow">Maestría EMD · Universidad de La Salle · 2026-I</div>
+      <h1>
+        Decisiones de marketing en un <em>mercado vivo</em>.
+      </h1>
+      <p class="subtitle">
+        Hoy arrancan en un simulador competitivo donde cada equipo asume el liderazgo de
+        marketing de una marca colombiana real, asigna presupuesto entre diez categorías
+        de inversión y observa cómo sus decisiones impactan los resultados.
+      </p>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Marca</span>
+          <span class="value"><em>Cruz Verde</em></span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Equipos</span>
+          <span class="value">6</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Rondas</span>
+          <span class="value">6</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Presupuesto</span>
+          <span class="value">$ 120 M COP</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: URL de registro -->
+    <section class="slide slide-2" data-slide="2">
+      <div class="eyebrow">Paso 1 · Conformación + Registro</div>
+      <h2>
+        Cada equipo registra <em>una sola vez</em>.
+      </h2>
+      <div class="url-card">
+        <span class="step">Abre en tu navegador</span>
+        <div class="url-text">
+          jfrubiano72.github.io/<span class="highlight">digitalmkt-arena</span>/simulador/
+        </div>
+        <p class="instruction">
+          El líder del equipo entra desde su computador, hace click en
+          <strong style="color: var(--gold-soft);">"Registrar nuevo equipo"</strong>,
+          llena los datos y recibe un <strong style="color: var(--gold-soft);">código de acceso único</strong> para el equipo.
+          Guarden ese código: es la llave para volver al panel durante todo el semestre.
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: Reglas del juego -->
+    <section class="slide slide-3" data-slide="3">
+      <div class="eyebrow">Antes de empezar</div>
+      <h2>Reglas <em>del juego</em></h2>
+      <div class="rules-grid">
+        <div class="rule">
+          <div class="rule-number">Regla 1</div>
+          <div class="rule-title">Un solo registro por equipo</div>
+          <div class="rule-desc">
+            El líder hace el registro. <strong>No registren el mismo equipo dos veces</strong>,
+            crea duplicados que confunden el ranking.
+          </div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">Regla 2</div>
+          <div class="rule-title">Guarden bien el código</div>
+          <div class="rule-desc">
+            El sistema les muestra el código <strong>una sola vez al registrarse</strong>.
+            Cópienlo, péguenlo en algún chat del equipo. Sin él no pueden volver a entrar.
+          </div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">Regla 3</div>
+          <div class="rule-title">La marca es Cruz Verde para todos</div>
+          <div class="rule-desc">
+            Los 6 equipos juegan <strong>la misma marca</strong>. Lo que diferencia un equipo de otro
+            es <strong>cómo decide</strong>, no qué marca tiene. Esto permite comparar estrategias directamente.
+          </div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">Regla 4</div>
+          <div class="rule-title">Investiguen antes de jugar</div>
+          <div class="rule-desc">
+            Antes de tocar el simulador, exploren su panel y usen los enlaces a
+            <strong>EMIS y Legiscomex</strong> (accesibles vía la hemeroteca de La Salle).
+            Sin data, las decisiones son ciegas.
+          </div>
+        </div>
+        <div class="rule gold">
+          <div class="rule-number">Regla 5</div>
+          <div class="rule-title">Confiamos en su criterio</div>
+          <div class="rule-desc">
+            El sistema les permite avanzar a la siguiente ronda apenas terminen la actual.
+            <strong>Espérense a la discusión grupal</strong> antes de jugar la siguiente.
+            Si se adelantan, pierden la oportunidad pedagógica.
+          </div>
+        </div>
+        <div class="rule">
+          <div class="rule-number">Regla 6</div>
+          <div class="rule-title">El dashboard es público</div>
+          <div class="rule-desc">
+            Al cierre de la clase verán el <strong>dashboard docente</strong> proyectado:
+            podio, comparativas, evolución de cada equipo, mix de inversión.
+            Es feedback en vivo para todos.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- NAVEGACIÓN -->
+  <div class="nav-bar">
+    <button class="nav-btn" id="btn-prev" onclick="cambiarSlide(-1)">‹</button>
+    <div class="nav-indicator">
+      <span class="nav-dot active" data-dot="1"></span>
+      <span class="nav-dot" data-dot="2"></span>
+      <span class="nav-dot" data-dot="3"></span>
+    </div>
+    <span class="nav-counter"><span id="slide-actual">1</span> / 3</span>
+    <button class="nav-btn" id="btn-next" onclick="cambiarSlide(1)">›</button>
+    <button class="nav-fullscreen" onclick="togglePantallaCompleta()">Pantalla completa</button>
+  </div>
+
+  <script>
+    let slideActual = 1;
+    const totalSlides = 3;
+
+    function mostrarSlide(n) {
+      document.querySelectorAll('.slide').forEach(function(s) {
+        s.classList.remove('active');
+      });
+      document.querySelector('.slide[data-slide="' + n + '"]').classList.add('active');
+
+      document.querySelectorAll('.nav-dot').forEach(function(d) {
+        d.classList.remove('active');
+        if (Number(d.dataset.dot) === n) d.classList.add('active');
+      });
+
+      document.getElementById('slide-actual').textContent = n;
+      document.getElementById('btn-prev').disabled = n === 1;
+      document.getElementById('btn-next').disabled = n === totalSlides;
+      slideActual = n;
+    }
+
+    function cambiarSlide(delta) {
+      const nueva = slideActual + delta;
+      if (nueva >= 1 && nueva <= totalSlides) mostrarSlide(nueva);
+    }
+
+    function togglePantallaCompleta() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Atajos de teclado
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') cambiarSlide(1);
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') cambiarSlide(-1);
+      else if (e.key === 'f' || e.key === 'F') togglePantallaCompleta();
+      else if (e.key === 'Home') mostrarSlide(1);
+      else if (e.key === 'End') mostrarSlide(totalSlides);
+    });
+
+    // Ocultar el hint después de 8 segundos
+    setTimeout(function() {
+      const hint = document.getElementById('nav-hint');
+      if (hint) hint.style.opacity = '0';
+    }, 8000);
+
+    mostrarSlide(1);
+  </script>
+
+</body>
+</html>
