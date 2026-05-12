@@ -100,6 +100,25 @@
       return get('listarEquiposPorCohorte', { cohorte_id: cohorteId || DEFAULT_COHORTE_ID });
     },
 
+    /**
+     * Crea una jugada nueva. Sprint 2.
+     * @param {string} codigoAcceso
+     * @param {Object} inversiones - { MEDPAG: 10000000, MEDTRAD: 5000000, ... }
+     */
+    crearJugada: function (codigoAcceso, inversiones) {
+      return post('crearJugada', { codigo_acceso: codigoAcceso, inversiones: inversiones });
+    },
+
+    /** Obtiene el histórico de jugadas de un equipo. Sprint 2. */
+    obtenerHistoricoJugadas: function (equipoId) {
+      return get('obtenerHistoricoJugadas', { equipo_id: equipoId });
+    },
+
+    /** Obtiene el ranking de equipos de una cohorte. Sprint 2. */
+    obtenerRanking: function (cohorteId) {
+      return get('obtenerRanking', { cohorte_id: cohorteId || DEFAULT_COHORTE_ID });
+    },
+
     DEFAULT_COHORTE_ID: DEFAULT_COHORTE_ID,
     API_URL: API_URL
   };
