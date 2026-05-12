@@ -122,6 +122,97 @@
       font-size: 13px; color: var(--ink-soft);
       line-height: 1.5; margin-bottom: var(--space-3);
     }
+
+    /* Desplegable de explicación pedagógica */
+    .categoria-detalle {
+      margin-bottom: var(--space-3);
+      border-top: 1px dashed var(--line);
+      padding-top: var(--space-2);
+    }
+    .categoria-detalle summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      transition: color 0.15s ease;
+    }
+    .categoria-detalle summary::-webkit-details-marker { display: none; }
+    .categoria-detalle summary::marker { content: ''; }
+    .categoria-detalle summary:hover { color: var(--navy); }
+    .summary-arrow {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      font-size: 14px;
+      color: var(--gold);
+    }
+    .categoria-detalle[open] .summary-arrow { transform: rotate(90deg); }
+    .categoria-detalle[open] summary { color: var(--navy); margin-bottom: var(--space-2); }
+
+    .detalle-content {
+      background: var(--bone);
+      border-radius: var(--radius-sm);
+      padding: var(--space-3);
+      margin-bottom: var(--space-3);
+      animation: detalle-fade-in 0.25s ease-out;
+    }
+    @keyframes detalle-fade-in {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .detalle-block { margin-bottom: var(--space-2); }
+    .detalle-block:last-child { margin-bottom: 0; }
+    .detalle-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .detalle-block p {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--ink);
+      margin: 0;
+    }
+    .detalle-block p.kpi-list {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    .detalle-tip {
+      background: white;
+      border-left: 3px solid var(--gold);
+      padding: 10px 12px;
+      border-radius: 4px;
+      margin-top: var(--space-3);
+    }
+    .detalle-tip-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .detalle-tip p {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--navy);
+      margin: 0;
+      font-style: italic;
+    }
     .categoria-input-wrap {
       position: relative;
       display: flex; align-items: center;
@@ -281,6 +372,11 @@
     <!-- FORMULARIO DE CATEGORÍAS -->
     <div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-6);">
 
+      <div style="background: var(--gold-pale); border: 1px solid var(--gold-soft); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-5); font-size: 13px; color: var(--navy);">
+        <strong style="color: var(--gold);">Pista:</strong>
+        Toca <strong>"¿Cómo decidir?"</strong> en cada categoría para ver una explicación pedagógica contextualizada para Cruz Verde, con KPIs que afecta y un tip práctico.
+      </div>
+
       <form id="form-jugada" onsubmit="return false;">
         <div class="categorias-grid" id="categorias-grid">
           <!-- Las categorías se generan por JS -->
@@ -368,28 +464,109 @@
 
     const sesion = DMKTAuth.leerSesion();
 
-    // ===== Catálogo de categorías (10) =====
+    // ===== Catálogo de categorías con explicaciones pedagógicas =====
+    // Contextualizado para Cruz Verde (salud retail, farmacia, e-commerce vs Farmatodo/Locatel)
     const CATEGORIAS = [
-      { id: 'MEDPAG', nombre: 'Medios pagos digitales', tag: 'Captación directa',
-        desc: 'Google Ads, Meta Ads, TikTok Ads. Genera conversiones rápidas y ROAS medible.' },
-      { id: 'MEDTRAD', nombre: 'Medios pagos tradicionales', tag: 'Awareness masivo',
-        desc: 'TV, radio, prensa, vallas. Construye brand equity pero baja trazabilidad.' },
-      { id: 'ORGAN', nombre: 'Contenido orgánico / SEO', tag: 'Captación sostenible',
-        desc: 'Blog, SEO técnico, optimización SERP. Tráfico gratuito a mediano plazo.' },
-      { id: 'INFLU', nombre: 'Influencers', tag: 'Awareness + ventas',
-        desc: 'Colaboraciones con nano, micro o macro influencers. Mezcla alcance y conversión.' },
-      { id: 'PRODPRE', nombre: 'Producto y precio', tag: 'Ticket promedio',
-        desc: 'Lanzamientos, ajustes de precio, bundles. Mejora margen y retención.' },
-      { id: 'WEBUX', nombre: 'Sitio web / UX', tag: 'Conversión',
-        desc: 'Optimización, rediseño, mejoras UX. Multiplica la conversión de todo el tráfico.' },
-      { id: 'RRSS', nombre: 'Redes sociales', tag: 'Comunidad',
-        desc: 'Community management, frecuencia, formatos. Suma seguidores y engagement.' },
-      { id: 'ESTMER', nombre: 'Estudios de mercado', tag: 'Inteligencia',
-        desc: 'Encuestas, focus groups, mixto. Mejora targeting en rondas futuras.' },
-      { id: 'ASES', nombre: 'Asesoría externa', tag: 'Bonus de eficiencia',
-        desc: 'Consultor junior, senior o CMO fraccional. Bonus general de eficiencia.' },
-      { id: 'INTIA', nombre: 'Inteligencia / IA', tag: 'Multiplicador',
-        desc: 'Reportes EMIS, Legiscomex, Claude, Gemini. Multiplica eficiencia 1.0x a 1.2x.' }
+      {
+        id: 'MEDPAG', nombre: 'Medios pagos digitales', tag: 'Captación directa',
+        desc: 'Google Ads, Meta Ads, TikTok Ads. Genera conversiones rápidas y ROAS medible.',
+        explicacion: {
+          que_es: 'Inversión en SEM (Google Ads), Display y Social Ads (Meta, TikTok, LinkedIn). El motor de conversión más eficiente con métricas trazables casi en tiempo real. Para Cruz Verde, los segmentos clave son búsquedas de medicamentos, suplementos y bienestar.',
+          cuando: 'Cuando tienes claro tu buyer persona, sitio web optimizado y objetivo medible. Funciona mejor con presupuestos medios-altos por el efecto de aprendizaje del algoritmo. Frente a Farmatodo y Locatel, es donde se libra la batalla por las búsquedas de alta intención.',
+          kpis: 'Tráfico pagado · Conversiones · CAC · ROAS · CPC',
+          tip: 'No tiene sentido invertir mucho aquí si tu sitio web está descuidado: cada peso en tráfico que cae en un sitio pobre se desperdicia. Para Cruz Verde, la teleconsulta y la app son destinos de conversión clave.'
+        }
+      },
+      {
+        id: 'MEDTRAD', nombre: 'Medios pagos tradicionales', tag: 'Awareness masivo',
+        desc: 'TV, radio, prensa, vallas. Construye brand equity pero baja trazabilidad.',
+        explicacion: {
+          que_es: 'TV, radio, prensa, vallas (OOH) y revistas especializadas. Genera alcance masivo y construye reconocimiento de marca, pero la atribución a ventas específicas es difícil. En salud, la TV de horario familiar todavía pesa fuerte en construcción de confianza.',
+          cuando: 'Cuando tu objetivo es construir o defender brand equity de largo plazo, lanzar una iniciativa que necesita reconocimiento masivo, o competir por share of voice en categorías donde la confianza importa más que la conversión inmediata.',
+          kpis: 'Awareness · Brand equity · Alcance bruto · Cobertura por GRP',
+          tip: 'La lección clave es la dificultad de medir el retorno directo. Equipos que invirtieron en medios tradicionales en R1 y R2 verán cómo el brand equity construido les multiplica las conversiones de medios digitales después. Es inversión a largo plazo.'
+        }
+      },
+      {
+        id: 'ORGAN', nombre: 'Contenido orgánico / SEO', tag: 'Captación sostenible',
+        desc: 'Blog, SEO técnico, optimización SERP. Tráfico gratuito a mediano plazo.',
+        explicacion: {
+          que_es: 'SEO técnico, SEO de contenido (blog, guías, artículos), y formatos orgánicos en redes (videos, carruseles, reels). El ROI es alto en el tiempo pero la construcción es lenta. Para Cruz Verde, contenido sobre salud y bienestar puede capturar búsquedas de alta intención sin pagar.',
+          cuando: 'Cuando piensas en sostenibilidad de tráfico más allá de la inversión paga, cuando tu categoría tiene búsquedas informacionales fuertes (síntomas, medicamentos, dietas), o cuando quieres construir autoridad temática.',
+          kpis: 'Tráfico orgánico · Posicionamiento SERP · Engagement · Tiempo en sitio',
+          tip: 'El SEO no genera resultados inmediatos: una inversión en R1 verá frutos en R3-R4. Es la inversión con mejor ratio costo-beneficio a largo plazo, pero requiere paciencia. Para salud, contenido confiable y de autor experto es oro.'
+        }
+      },
+      {
+        id: 'INFLU', nombre: 'Influencers', tag: 'Awareness + ventas',
+        desc: 'Colaboraciones con nano, micro o macro influencers. Mezcla alcance y conversión.',
+        explicacion: {
+          que_es: 'Colaboraciones con creadores de contenido. Tres tiers: nano (1K-10K seguidores, alta intimidad, bajo costo), micro (10K-100K, mejor ROI), macro (100K+, alcance grande, alto costo). En salud, los nano y micro suelen tener más credibilidad que los macro.',
+          cuando: 'Cuando tu producto necesita prueba social, cuando quieres entrar a un nicho específico (bienestar femenino, pediatría, adultos mayores), o cuando quieres educar al consumidor sobre un nuevo servicio como la teleconsulta de Cruz Verde.',
+          kpis: 'Alcance · Awareness · Engagement rate · Brand sentiment · Códigos de descuento',
+          tip: 'En salud, la regulación es estricta sobre lo que un influencer puede afirmar. Los micro influencers especializados (médicos en redes, nutricionistas, mamás bloggers) suelen tener más impacto que celebridades. Diferenciación clave frente a Farmatodo y Locatel.'
+        }
+      },
+      {
+        id: 'PRODPRE', nombre: 'Producto y precio', tag: 'Ticket promedio',
+        desc: 'Lanzamientos, ajustes de precio, bundles. Mejora margen y retención.',
+        explicacion: {
+          que_es: 'Decisiones sobre la oferta: lanzamiento de SKUs nuevos, ajustes de precio, promociones, bundles (combos), marca propia. Es la palanca más poderosa porque afecta margen, percepción de valor y retención. Para Cruz Verde, las decisiones sobre marca propia y bundles de bienestar son críticas.',
+          cuando: 'Cuando ves que el ticket promedio está estancado, cuando los competidores están moviéndose en precio, o cuando hay una categoría sin atender que tu buyer persona demanda (ej. wellness, productos naturales).',
+          kpis: 'Ventas · Ticket promedio · Margen bruto · Retención · ROAS combinado',
+          tip: 'Una guerra de precios destruye valor para todo el sector. Cruz Verde compite con Farmatodo y Locatel en precio percibido y experiencia. El bundling y la marca propia son palancas mejores que el descuento puro.'
+        }
+      },
+      {
+        id: 'WEBUX', nombre: 'Sitio web / UX', tag: 'Conversión',
+        desc: 'Optimización, rediseño, mejoras UX. Multiplica la conversión de todo el tráfico.',
+        explicacion: {
+          que_es: 'Inversión en sitio web y app: optimización de tiempos de carga, rediseño UX, simplificación del checkout, búsqueda interna, integración con teleconsulta. Es un multiplicador: mejora la conversión de TODO el tráfico que llega, sea pago u orgánico.',
+          cuando: 'Siempre que el ratio de conversión esté por debajo del benchmark del sector (en retail farmacéutico, 2-4% es bueno). Prioritariamente antes de invertir fuerte en medios pagos: no tiene sentido traer tráfico a un sitio que no convierte.',
+          kpis: 'Tasa de conversión · Tiempo en sitio · Tasa de rebote · NPS · LTV',
+          tip: 'La app de Cruz Verde con teleconsulta es un diferenciador único frente a Farmatodo y Locatel. Invertir en mejorar la experiencia puede multiplicar las ventas de medios digitales y dar ventaja sostenible. Las primeras rondas son ideales para construir esta base.'
+        }
+      },
+      {
+        id: 'RRSS', nombre: 'Redes sociales', tag: 'Comunidad',
+        desc: 'Community management, frecuencia, formatos. Suma seguidores y engagement.',
+        explicacion: {
+          que_es: 'Manejo orgánico de redes sociales: planeación de contenidos, frecuencia de posteo, formatos (reels, carruseles, lives), community management. No genera ventas directas pero construye comunidad y mejora retención.',
+          cuando: 'Cuando quieres construir comunidad de marca, cuando hay preguntas frecuentes que un buen CM puede convertir en contenido educativo, o cuando estás manejando una transición (lanzamiento de nuevo servicio, crisis reputacional).',
+          kpis: 'Seguidores · Engagement rate · DAU social · Sentimiento · Tasa de respuesta',
+          tip: 'En salud, el community management profesional es crítico: una respuesta mal manejada sobre síntomas o medicamentos puede convertirse en crisis. Cruz Verde necesita CMs capacitados que sepan cuándo escalar a un médico real.'
+        }
+      },
+      {
+        id: 'ESTMER', nombre: 'Estudios de mercado', tag: 'Inteligencia',
+        desc: 'Encuestas, focus groups, mixto. Mejora targeting en rondas futuras.',
+        explicacion: {
+          que_es: 'Compra de estudios de mercado: cuantitativos (encuestas masivas, paneles online), cualitativos (focus groups, entrevistas profundas) o mixtos integrales. Reduce incertidumbre sobre buyer persona, competencia, tendencias del sector.',
+          cuando: 'Cuando vas a tomar una decisión grande (lanzamiento de marca propia, entrada a nuevo segmento), cuando hay incertidumbre sobre el comportamiento del cliente, o cuando quieres anticiparte a movimientos de la competencia.',
+          kpis: 'Multiplicador de Ajuste_Buyer (1.1x a 1.4x) · Información para anticipar eventos',
+          tip: 'No generan ventas directas, pero mejoran el targeting de todas las demás inversiones en las rondas siguientes. Es una decisión estratégica de largo plazo: invertir en R1-R2 da ventaja en R3-R6.'
+        }
+      },
+      {
+        id: 'ASES', nombre: 'Asesoría externa', tag: 'Bonus de eficiencia',
+        desc: 'Consultor junior, senior o CMO fraccional. Bonus general de eficiencia.',
+        explicacion: {
+          que_es: 'Contratación de consultor externo de marketing: junior (1 ronda, recomendaciones tácticas), senior (2 rondas, plan estratégico con análisis competitivo), o CMO fraccional (3 rondas, plan estratégico integral). Simulado mediante IA con prompts curados.',
+          cuando: 'Cuando tu equipo está rezagado en el ranking, cuando hay incertidumbre alta sobre la estrategia, o cuando quieres validar una decisión grande con criterio externo. También cuando llegas a una ronda con poco presupuesto y necesitas optimizar al máximo.',
+          kpis: 'Bonus de calidad de decisión (+10% a +20% en eficiencia general)',
+          tip: 'No todo consejo es bueno. Los estudiantes deben aprender a briefar bien al consultor: si la pregunta es pobre, la respuesta también. Y aprender cuándo conviene contratar (problemas complejos) y cuándo es desperdicio (decisiones rutinarias).'
+        }
+      },
+      {
+        id: 'INTIA', nombre: 'Inteligencia / IA', tag: 'Multiplicador',
+        desc: 'Reportes EMIS, Legiscomex, asistentes de IA. Multiplica eficiencia general.',
+        explicacion: {
+          que_es: 'Adopción de herramientas de inteligencia: reportes especializados (EMIS para datos financieros, Legiscomex para comercio exterior) y asistentes de IA (Claude, Gemini, Perplexity). Multiplica la eficiencia de todas las decisiones.',
+          cuando: 'Idealmente en R1 o R2 para obtener bonus de pionero. Cuando tu equipo necesita anticipar eventos del mercado. Cuando quieres validar hipótesis estratégicas con datos reales y no con intuición.',
+          kpis: 'Multiplicador de eficiencia (1.0x a 1.3x) · Capacidad de anticipar eventos',
+          tip: 'El primer equipo que adopta una herramienta nueva recibe bonus del 20%. Los que llegan después solo reciben paridad. Esta categoría enseña ventaja competitiva temporal y la importancia del first-mover advantage en adopción tecnológica.'
+        }
+      }
     ];
 
     // ===== Estado =====
@@ -415,6 +592,7 @@
     function renderCategorias() {
       const grid = document.getElementById('categorias-grid');
       grid.innerHTML = CATEGORIAS.map(function(cat) {
+        const exp = cat.explicacion;
         return (
           '<div class="categoria">' +
             '<div class="categoria-header">' +
@@ -424,6 +602,33 @@
               '</div>' +
             '</div>' +
             '<div class="categoria-desc">' + cat.desc + '</div>' +
+
+            // Desplegable de explicación pedagógica
+            '<details class="categoria-detalle">' +
+              '<summary>' +
+                '<span class="summary-arrow">▸</span>' +
+                '<span class="summary-text">¿Cómo decidir?</span>' +
+              '</summary>' +
+              '<div class="detalle-content">' +
+                '<div class="detalle-block">' +
+                  '<span class="detalle-label">Qué es</span>' +
+                  '<p>' + exp.que_es + '</p>' +
+                '</div>' +
+                '<div class="detalle-block">' +
+                  '<span class="detalle-label">Cuándo conviene invertir más</span>' +
+                  '<p>' + exp.cuando + '</p>' +
+                '</div>' +
+                '<div class="detalle-block">' +
+                  '<span class="detalle-label">KPIs que afecta</span>' +
+                  '<p class="kpi-list">' + exp.kpis + '</p>' +
+                '</div>' +
+                '<div class="detalle-tip">' +
+                  '<span class="detalle-tip-label">Tip pedagógico</span>' +
+                  '<p>' + exp.tip + '</p>' +
+                '</div>' +
+              '</div>' +
+            '</details>' +
+
             '<div class="categoria-input-wrap">' +
               '<span class="currency">COP</span>' +
               '<input type="text" inputmode="numeric" class="categoria-input" ' +
