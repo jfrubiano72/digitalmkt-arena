@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jugada · DigitalMKT Arena</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    /* Estilos específicos de la página de jugada */
+    .jugada-header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+      color: white;
+      padding: var(--space-7) 0 var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+    .jugada-header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(200, 150, 62, 0.15), transparent 60%);
+      pointer-events: none;
+    }
+    .jugada-header h1 { color: white; }
+    .jugada-header .breadcrumb { color: rgba(255,255,255,0.6); }
+    .jugada-header .breadcrumb a { color: var(--gold-soft); }
+
+    .ronda-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(200, 150, 62, 0.4);
+      padding: 4px 10px;
+      border-radius: 100px;
+      margin-bottom: var(--space-3);
+    }
+
+    .presupuesto-tracker {
+      position: sticky;
+      top: 56px;
+      z-index: 20;
+      background: var(--navy);
+      color: white;
+      padding: var(--space-4) 0;
+      box-shadow: 0 4px 12px rgba(11, 37, 69, 0.15);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .presupuesto-tracker-inner {
+      display: flex; justify-content: space-between; align-items: center; gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .tracker-stat {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .tracker-stat .label {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+    }
+    .tracker-stat .value {
+      font-family: var(--font-display); font-size: 22px;
+      font-weight: 500; line-height: 1;
+    }
+    .tracker-stat .value.gold { color: var(--gold-soft); }
+    .tracker-stat .value.warn { color: #FFA94D; }
+    .tracker-stat .value.error { color: #FF6B6B; }
+    .tracker-stat .value.ok { color: #69DB7C; }
+
+    .bar-wrapper {
+      flex: 1; min-width: 200px;
+      height: 8px; background: rgba(255,255,255,0.12);
+      border-radius: 100px; overflow: hidden;
+      position: relative;
+    }
+    .bar-fill {
+      height: 100%; background: var(--gold);
+      transition: width 0.25s ease, background 0.25s ease;
+      border-radius: 100px;
+    }
+    .bar-fill.warn { background: #FFA94D; }
+    .bar-fill.error { background: #FF6B6B; }
+
+    /* Categorías */
+    .categorias-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+    @media (min-width: 700px) {
+      .categorias-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .categoria {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .categoria:focus-within {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px var(--teal-pale);
+    }
+    .categoria-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: var(--space-3); margin-bottom: var(--space-3);
+    }
+    .categoria-tag {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: var(--space-1);
+    }
+    .categoria-name {
+      font-family: var(--font-display); font-size: 18px;
+      color: var(--navy); font-weight: 500; line-height: 1.2;
+    }
+    .categoria-desc {
+      font-size: 13px; color: var(--ink-soft);
+      line-height: 1.5; margin-bottom: var(--space-3);
+    }
+    .categoria-input-wrap {
+      position: relative;
+      display: flex; align-items: center;
+      gap: var(--space-2);
+    }
+    .categoria-input-wrap .currency {
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--ink-muted);
+    }
+    .categoria-input {
+      flex: 1; padding: 10px 12px;
+      border: 1px solid var(--line); border-radius: var(--radius-sm);
+      font-family: var(--font-mono); font-size: 15px;
+      text-align: right; font-weight: 500;
+      transition: border-color 0.15s ease;
+    }
+    .categoria-input:focus {
+      outline: none; border-color: var(--teal);
+    }
+    .categoria-input.has-value { color: var(--navy); }
+    .quick-buttons {
+      display: flex; gap: 4px; margin-top: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .quick-btn {
+      font-family: var(--font-mono); font-size: 10px;
+      padding: 3px 8px; border-radius: 100px;
+      background: var(--bone); border: 1px solid var(--line);
+      cursor: pointer; transition: all 0.15s ease;
+      color: var(--ink-soft);
+    }
+    .quick-btn:hover {
+      background: var(--teal-pale); border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    /* Modal resultado */
+    .resultado-banner {
+      padding: var(--space-5);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-5);
+      text-align: center;
+    }
+    .resultado-banner.ok { background: var(--teal-pale); border: 1px solid var(--teal-soft); }
+    .resultado-banner.warn { background: var(--gold-pale); border: 1px solid var(--gold-soft); }
+    .resultado-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .resultado-stat {
+      background: white; border: 1px solid var(--line);
+      border-radius: var(--radius-sm); padding: var(--space-3);
+      text-align: center;
+    }
+    .resultado-stat .label {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-muted); display: block; margin-bottom: var(--space-1);
+    }
+    .resultado-stat .value {
+      font-family: var(--font-display); font-size: 22px;
+      color: var(--navy); font-weight: 500;
+    }
+    .resultado-stat .delta {
+      font-size: 11px; color: var(--ok); margin-left: 4px;
+    }
+    .resultado-stat .delta.neg { color: var(--error); }
+
+    .nota-motor {
+      background: var(--bone); border-left: 4px solid var(--gold);
+      padding: var(--space-4); border-radius: var(--radius-sm);
+      font-family: var(--font-display); font-style: italic;
+      font-size: 15px; line-height: 1.5;
+      color: var(--ink);
+      margin-bottom: var(--space-5);
+    }
+
+    /* Footer fijo de acción */
+    .action-bar {
+      position: sticky; bottom: 0;
+      background: var(--paper);
+      border-top: 1px solid var(--line);
+      padding: var(--space-4) 0;
+      z-index: 15;
+      box-shadow: 0 -4px 12px rgba(11, 37, 69, 0.06);
+    }
+    .action-bar-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: var(--space-3); flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark"></span>
+        <span class="brand-text">
+          <strong>DigitalMKT Arena</strong>
+          <span>VISORIA · SPRINT 2</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="panel.html">← Volver al panel</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- LOADER -->
+  <div id="loader" class="loading">
+    <span class="spinner"></span>
+    <span>Cargando datos de la jugada…</span>
+  </div>
+
+  <main id="main-content" class="hidden">
+
+    <!-- HEADER OSCURO CON CONTEXTO -->
+    <section class="jugada-header">
+      <div class="container">
+        <span class="breadcrumb">
+          <a href="panel.html">Panel</a>
+          <span class="sep">/</span>
+          <span>Nueva jugada</span>
+        </span>
+        <span class="ronda-tag" id="ronda-tag">Ronda —</span>
+        <h1>Jugada de <span id="equipo-nombre" class="italic-display" style="color: var(--gold-soft);">—</span></h1>
+        <p style="color: rgba(255,255,255,0.78); max-width: 60ch; margin-top: var(--space-3);">
+          Asigna tu presupuesto entre las 10 categorías de decisión. Cuando termines, envía
+          la jugada y verás los resultados al instante.
+        </p>
+      </div>
+    </section>
+
+    <!-- TRACKER DE PRESUPUESTO (sticky) -->
+    <section class="presupuesto-tracker">
+      <div class="container presupuesto-tracker-inner">
+        <div class="tracker-stat">
+          <span class="label">Presupuesto disponible</span>
+          <span class="value gold" id="tracker-disponible">—</span>
+        </div>
+        <div class="bar-wrapper">
+          <div class="bar-fill" id="bar-fill" style="width: 0%"></div>
+        </div>
+        <div class="tracker-stat" style="text-align: right;">
+          <span class="label">Asignado</span>
+          <span class="value" id="tracker-asignado">$ 0</span>
+        </div>
+        <div class="tracker-stat" style="text-align: right;">
+          <span class="label">Restante</span>
+          <span class="value ok" id="tracker-restante">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMULARIO DE CATEGORÍAS -->
+    <div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-6);">
+
+      <form id="form-jugada" onsubmit="return false;">
+        <div class="categorias-grid" id="categorias-grid">
+          <!-- Las categorías se generan por JS -->
+        </div>
+      </form>
+    </div>
+
+    <!-- BARRA DE ACCIÓN FIJA -->
+    <div class="action-bar">
+      <div class="container action-bar-inner">
+        <span style="font-size: 13px; color: var(--ink-muted);" id="action-status">
+          Asigna al menos $10.000.000 para poder enviar la jugada.
+        </span>
+        <div style="display: flex; gap: var(--space-3);">
+          <button type="button" class="btn btn-ghost" id="btn-reset">Limpiar todo</button>
+          <button type="button" class="btn btn-primary" id="btn-enviar" disabled>
+            <span id="btn-enviar-text">Enviar jugada</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL DE RESULTADO -->
+  <div id="modal-resultado" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 640px;">
+      <span class="modal-eyebrow">Jugada procesada</span>
+      <h2 id="modal-titulo">Resultados de tu ronda</h2>
+
+      <div class="modal-body">
+        <div class="resultado-banner ok" id="resultado-banner">
+          <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: var(--space-2);">VENTAS DE LA RONDA</div>
+          <div style="font-family: var(--font-display); font-size: 42px; font-weight: 500; color: var(--navy); line-height: 1;" id="resultado-ventas">$ —</div>
+          <div style="font-size: 13px; color: var(--ink-muted); margin-top: var(--space-2);">
+            ROAS: <strong id="resultado-roas">—</strong> · Conversiones: <strong id="resultado-conversiones">—</strong>
+          </div>
+        </div>
+
+        <div class="resultado-stats">
+          <div class="resultado-stat">
+            <span class="label">Brand Equity</span>
+            <span class="value" id="resultado-brand">—</span>
+            <span class="delta" id="resultado-brand-delta"></span>
+          </div>
+          <div class="resultado-stat">
+            <span class="label">Seguidores nuevos</span>
+            <span class="value" id="resultado-seguidores">—</span>
+          </div>
+          <div class="resultado-stat">
+            <span class="label">Presupuesto restante</span>
+            <span class="value" id="resultado-presupuesto">—</span>
+          </div>
+          <div class="resultado-stat">
+            <span class="label">Ronda completada</span>
+            <span class="value" id="resultado-ronda">—</span>
+          </div>
+        </div>
+
+        <div class="nota-motor">
+          <span style="font-family: var(--font-mono); font-style: normal; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 8px;">Observación del simulador:</span>
+          <span id="resultado-nota">—</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <a href="panel.html" class="btn btn-primary">Volver al panel →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container site-footer-inner">
+      <span>© 2026 VISORIA Intelligence · Mg. Javier F. Rubiano Espinosa</span>
+      <span>Sprint 2 · Motor de jugada</span>
+    </div>
+  </footer>
+
+  <script src="js/api-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // ===== Verificar sesión =====
+    if (!DMKTAuth.haySesion()) {
+      window.location.href = 'acceso.html';
+    }
+
+    const sesion = DMKTAuth.leerSesion();
+
+    // ===== Catálogo de categorías (10) =====
+    const CATEGORIAS = [
+      { id: 'MEDPAG', nombre: 'Medios pagos digitales', tag: 'Captación directa',
+        desc: 'Google Ads, Meta Ads, TikTok Ads. Genera conversiones rápidas y ROAS medible.' },
+      { id: 'MEDTRAD', nombre: 'Medios pagos tradicionales', tag: 'Awareness masivo',
+        desc: 'TV, radio, prensa, vallas. Construye brand equity pero baja trazabilidad.' },
+      { id: 'ORGAN', nombre: 'Contenido orgánico / SEO', tag: 'Captación sostenible',
+        desc: 'Blog, SEO técnico, optimización SERP. Tráfico gratuito a mediano plazo.' },
+      { id: 'INFLU', nombre: 'Influencers', tag: 'Awareness + ventas',
+        desc: 'Colaboraciones con nano, micro o macro influencers. Mezcla alcance y conversión.' },
+      { id: 'PRODPRE', nombre: 'Producto y precio', tag: 'Ticket promedio',
+        desc: 'Lanzamientos, ajustes de precio, bundles. Mejora margen y retención.' },
+      { id: 'WEBUX', nombre: 'Sitio web / UX', tag: 'Conversión',
+        desc: 'Optimización, rediseño, mejoras UX. Multiplica la conversión de todo el tráfico.' },
+      { id: 'RRSS', nombre: 'Redes sociales', tag: 'Comunidad',
+        desc: 'Community management, frecuencia, formatos. Suma seguidores y engagement.' },
+      { id: 'ESTMER', nombre: 'Estudios de mercado', tag: 'Inteligencia',
+        desc: 'Encuestas, focus groups, mixto. Mejora targeting en rondas futuras.' },
+      { id: 'ASES', nombre: 'Asesoría externa', tag: 'Bonus de eficiencia',
+        desc: 'Consultor junior, senior o CMO fraccional. Bonus general de eficiencia.' },
+      { id: 'INTIA', nombre: 'Inteligencia / IA', tag: 'Multiplicador',
+        desc: 'Reportes EMIS, Legiscomex, Claude, Gemini. Multiplica eficiencia 1.0x a 1.2x.' }
+    ];
+
+    // ===== Estado =====
+    let presupuestoDisponible = 0;
+    let rondaActual = 0;
+    const inversiones = {}; // { MEDPAG: 1000000, ... }
+
+    // ===== Helpers =====
+    function formatCOP(n) {
+      return '$ ' + Number(n || 0).toLocaleString('es-CO', { maximumFractionDigits: 0 });
+    }
+
+    function formatAbreviado(n) {
+      if (!n) return '$ 0';
+      const num = Number(n);
+      if (num >= 1e9) return '$ ' + (num / 1e9).toFixed(1) + ' MM';
+      if (num >= 1e6) return '$ ' + (num / 1e6).toFixed(1) + ' M';
+      if (num >= 1e3) return '$ ' + (num / 1e3).toFixed(0) + ' K';
+      return '$ ' + num;
+    }
+
+    // ===== Render =====
+    function renderCategorias() {
+      const grid = document.getElementById('categorias-grid');
+      grid.innerHTML = CATEGORIAS.map(function(cat) {
+        return (
+          '<div class="categoria">' +
+            '<div class="categoria-header">' +
+              '<div>' +
+                '<div class="categoria-tag">' + cat.tag + '</div>' +
+                '<div class="categoria-name">' + cat.nombre + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="categoria-desc">' + cat.desc + '</div>' +
+            '<div class="categoria-input-wrap">' +
+              '<span class="currency">COP</span>' +
+              '<input type="text" inputmode="numeric" class="categoria-input" ' +
+              '       data-cat="' + cat.id + '" placeholder="0" value="">' +
+            '</div>' +
+            '<div class="quick-buttons">' +
+              '<button type="button" class="quick-btn" data-cat="' + cat.id + '" data-monto="5000000">+ $5M</button>' +
+              '<button type="button" class="quick-btn" data-cat="' + cat.id + '" data-monto="10000000">+ $10M</button>' +
+              '<button type="button" class="quick-btn" data-cat="' + cat.id + '" data-monto="20000000">+ $20M</button>' +
+              '<button type="button" class="quick-btn" data-cat="' + cat.id + '" data-monto="0">Cero</button>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      // Event listeners
+      document.querySelectorAll('.categoria-input').forEach(function(inp) {
+        inp.addEventListener('input', function(e) {
+          const cat = e.target.dataset.cat;
+          const raw = e.target.value.replace(/[^\d]/g, '');
+          const monto = Number(raw) || 0;
+          inversiones[cat] = monto;
+          // Format con miles
+          if (monto > 0) {
+            e.target.value = monto.toLocaleString('es-CO');
+            e.target.classList.add('has-value');
+          } else {
+            e.target.value = '';
+            e.target.classList.remove('has-value');
+          }
+          actualizarTracker();
+        });
+      });
+
+      document.querySelectorAll('.quick-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          const cat = e.target.dataset.cat;
+          const monto = Number(e.target.dataset.monto);
+          if (monto === 0) {
+            inversiones[cat] = 0;
+          } else {
+            inversiones[cat] = (inversiones[cat] || 0) + monto;
+          }
+          const input = document.querySelector('.categoria-input[data-cat="' + cat + '"]');
+          if (inversiones[cat] > 0) {
+            input.value = inversiones[cat].toLocaleString('es-CO');
+            input.classList.add('has-value');
+          } else {
+            input.value = '';
+            input.classList.remove('has-value');
+          }
+          actualizarTracker();
+        });
+      });
+    }
+
+    function actualizarTracker() {
+      const total = Object.keys(inversiones).reduce(function(s, k) {
+        return s + (Number(inversiones[k]) || 0);
+      }, 0);
+      const restante = presupuestoDisponible - total;
+      const pct = presupuestoDisponible > 0 ? Math.min(100, (total / presupuestoDisponible) * 100) : 0;
+
+      document.getElementById('tracker-asignado').textContent = formatAbreviado(total);
+      document.getElementById('tracker-restante').textContent = formatAbreviado(restante);
+
+      const bar = document.getElementById('bar-fill');
+      bar.style.width = pct + '%';
+      bar.classList.remove('warn', 'error');
+
+      const restanteEl = document.getElementById('tracker-restante');
+      restanteEl.classList.remove('ok', 'warn', 'error');
+
+      if (restante < 0) {
+        bar.classList.add('error');
+        restanteEl.classList.add('error');
+      } else if (pct > 90) {
+        bar.classList.add('warn');
+        restanteEl.classList.add('warn');
+      } else {
+        restanteEl.classList.add('ok');
+      }
+
+      // Actualizar botón enviar
+      const btnEnviar = document.getElementById('btn-enviar');
+      const actionStatus = document.getElementById('action-status');
+
+      if (total > presupuestoDisponible) {
+        btnEnviar.disabled = true;
+        actionStatus.textContent = 'Te excediste del presupuesto. Reduce tu asignación.';
+        actionStatus.style.color = 'var(--error)';
+      } else if (total < 10000000) {
+        btnEnviar.disabled = true;
+        actionStatus.textContent = 'Asigna al menos $10.000.000 para poder enviar la jugada.';
+        actionStatus.style.color = 'var(--ink-muted)';
+      } else {
+        btnEnviar.disabled = false;
+        actionStatus.textContent = 'Listo. Asignación total: ' + formatCOP(total);
+        actionStatus.style.color = 'var(--ok)';
+      }
+    }
+
+    // ===== Reset =====
+    document.getElementById('btn-reset').addEventListener('click', function() {
+      if (!confirm('¿Limpiar toda la asignación? Esto pone todas las categorías en cero.')) return;
+      Object.keys(inversiones).forEach(function(k) { inversiones[k] = 0; });
+      document.querySelectorAll('.categoria-input').forEach(function(inp) {
+        inp.value = '';
+        inp.classList.remove('has-value');
+      });
+      actualizarTracker();
+    });
+
+    // ===== Enviar jugada =====
+    document.getElementById('btn-enviar').addEventListener('click', async function() {
+      const btn = this;
+      const txt = document.getElementById('btn-enviar-text');
+      btn.disabled = true;
+      txt.textContent = 'Procesando jugada…';
+
+      try {
+        const data = await DMKTApi.crearJugada(sesion.codigo_acceso, inversiones);
+        mostrarResultado(data);
+      } catch (err) {
+        DMKTUtils.toast(err.message || 'Error al enviar jugada', 'error', 'No se pudo procesar');
+        btn.disabled = false;
+        txt.textContent = 'Enviar jugada';
+      }
+    });
+
+    function mostrarResultado(data) {
+      const r = data.resultados;
+      const j = data.jugada;
+      const e = data.equipo_actualizado;
+
+      document.getElementById('resultado-ventas').textContent = formatCOP(r.ventas);
+      document.getElementById('resultado-roas').textContent = r.roas + 'x';
+      document.getElementById('resultado-conversiones').textContent = Number(r.conversiones).toLocaleString('es-CO');
+      document.getElementById('resultado-brand').textContent = j.brand_equity_despues + '/100';
+      document.getElementById('resultado-seguidores').textContent = '+' + Number(r.seguidores).toLocaleString('es-CO');
+      document.getElementById('resultado-presupuesto').textContent = formatAbreviado(j.presupuesto_despues);
+      document.getElementById('resultado-ronda').textContent = 'R' + j.ronda;
+
+      const deltaEl = document.getElementById('resultado-brand-delta');
+      const delta = r.delta_brand_equity;
+      if (delta > 0) {
+        deltaEl.textContent = '+' + delta;
+        deltaEl.classList.remove('neg');
+      } else {
+        deltaEl.textContent = delta;
+        deltaEl.classList.add('neg');
+      }
+
+      const banner = document.getElementById('resultado-banner');
+      banner.classList.remove('ok', 'warn');
+      if (r.roas >= 1.5) banner.classList.add('ok');
+      else banner.classList.add('warn');
+
+      document.getElementById('resultado-nota').textContent = r.nota_motor;
+
+      document.getElementById('modal-resultado').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // ===== Carga inicial =====
+    (async function() {
+      try {
+        const data = await DMKTApi.autenticarEquipo(sesion.codigo_acceso);
+        const eq = data.equipo;
+
+        // Si ya jugó la ronda actual, redirigir al panel
+        // (la lógica del backend bloquea, pero le damos UX más clara)
+        presupuestoDisponible = Number(eq.presupuesto_actual) || 0;
+        const rondaJugada = Number(eq.ronda_actual) || 0;
+        rondaActual = rondaJugada + 1;
+
+        document.getElementById('ronda-tag').textContent = 'Ronda ' + rondaActual;
+        document.getElementById('equipo-nombre').textContent = eq.nombre_equipo;
+        document.getElementById('tracker-disponible').textContent = formatAbreviado(presupuestoDisponible);
+
+        renderCategorias();
+        actualizarTracker();
+
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+
+      } catch (err) {
+        document.getElementById('loader').innerHTML =
+          '<div style="text-align: center; padding: var(--space-7);">' +
+            '<h3>No se pudo cargar la jugada</h3>' +
+            '<p style="color: var(--ink-soft);">' + (err.message || 'Error') + '</p>' +
+            '<a href="panel.html" class="btn btn-primary" style="margin-top: var(--space-4);">Volver al panel</a>' +
+          '</div>';
+      }
+    })();
+  </script>
+
+</body>
+</html>
