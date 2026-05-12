@@ -236,6 +236,10 @@
                 Tienes <strong id="cta-presupuesto" style="color: var(--gold-soft);">—</strong> disponibles para invertir en
                 las 10 categorías de decisión. Tu jugada genera resultados al instante.
               </p>
+              <div id="cta-inyeccion-info" class="hidden" style="margin-top: var(--space-3); padding: 10px 14px; background: rgba(200, 150, 62, 0.12); border-left: 3px solid var(--gold); border-radius: 4px; font-size: 13px; color: rgba(255,255,255,0.9);">
+                <strong style="color: var(--gold-soft);">Inyección de presupuesto:</strong>
+                <span id="cta-inyeccion-detalle">—</span>
+              </div>
             </div>
             <a href="jugada.html" class="btn btn-gold" id="btn-jugar" style="background: var(--gold); color: white; border-color: var(--gold); padding: 14px 28px; font-size: 15px;">
               Iniciar jugada →
@@ -367,7 +371,31 @@
             '</div>';
         } else {
           setText('cta-ronda', proximaRonda);
-          document.getElementById('cta-presupuesto').textContent = DMKTUtils.formatearAbreviado(equipo.presupuesto_actual) + ' COP';
+
+          // Calcular inyección que recibirá en esta ronda (si aplica)
+          let inyeccionEstaRonda = 0;
+          if (proximaRonda >= 2 && config.parametros) {
+            const paramKey = 'inyeccion_r' + proximaRonda;
+            if (config.parametros[paramKey] && config.parametros[paramKey].valor) {
+              inyeccionEstaRonda = Number(config.parametros[paramKey].valor) || 0;
+            }
+          }
+
+          const presupuestoBase = Number(equipo.presupuesto_actual) || 0;
+          const presupuestoDisponible = presupuestoBase + inyeccionEstaRonda;
+
+          document.getElementById('cta-presupuesto').textContent =
+            DMKTUtils.formatearAbreviado(presupuestoDisponible) + ' COP';
+
+          // Mostrar info de inyección si aplica
+          if (inyeccionEstaRonda > 0) {
+            document.getElementById('cta-inyeccion-info').classList.remove('hidden');
+            document.getElementById('cta-inyeccion-detalle').innerHTML =
+              'En esta ronda recibes <strong>+ $' +
+              (inyeccionEstaRonda / 1000000).toFixed(0) + 'M COP</strong> de inyección. ' +
+              'Tu presupuesto disponible incluye este monto (te quedaban $' +
+              (presupuestoBase / 1000000).toFixed(1) + 'M de la ronda anterior).';
+          }
         }
 
         // ===== Cargar histórico =====
