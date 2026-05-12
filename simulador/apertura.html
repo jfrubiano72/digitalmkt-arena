@@ -2,10 +2,10 @@
 <!--
   ════════════════════════════════════════════════════════════════
   DigitalMKT Arena · VISORIA Intelligence
-  © 2026 Mg. Javier Fernando Rubiano Espinosa. Todos los derechos reservados.
+  © 2026 Profesor Javier Fernando Rubiano Espinosa. Todos los derechos reservados.
 
   Esta plataforma es propiedad intelectual de VISORIA Intelligence y
-  Mg. Javier Fernando Rubiano Espinosa. Su uso está restringido a fines
+  Profesor Javier Fernando Rubiano Espinosa. Su uso está restringido a fines
   académicos dentro de la Maestría en E-commerce y Marketing Digital
   de la Universidad de La Salle.
 
@@ -24,8 +24,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apertura · DigitalMKT Arena</title>
-  <meta name="copyright" content="© 2026 VISORIA Intelligence · Mg. Javier Fernando Rubiano Espinosa">
-  <meta name="author" content="Mg. Javier Fernando Rubiano Espinosa · VISORIA Intelligence">
+  <meta name="copyright" content="© 2026 VISORIA Intelligence · Profesor Javier Fernando Rubiano Espinosa">
+  <meta name="author" content="Profesor Javier Fernando Rubiano Espinosa · VISORIA Intelligence">
   <meta name="rights" content="Todos los derechos reservados">
   <meta name="terms" content="Uso académico exclusivo para Maestría EMD · Universidad de La Salle">
   <meta name="license" content="Propietario · Contacto para licencias: jfrubiano72@unisalle.edu.co">
@@ -309,27 +309,52 @@
     .crono-block ul li:last-child { border-bottom: none; }
 
     /* ===== CIERRE ===== */
+    .slide-cierre {
+      justify-content: center;
+      align-items: center;
+      padding: 4vh 7vw;
+    }
+    .cierre-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .cierre-title {
+      font-size: clamp(32px, 4.8vw, 64px) !important;
+      margin-bottom: 18px !important;
+    }
+    .cierre-subtitle {
+      color: rgba(255,255,255,0.82) !important;
+      max-width: 64ch !important;
+      margin-bottom: 28px !important;
+      font-size: clamp(15px, 1.4vw, 18px) !important;
+    }
     .closing-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 24px; max-width: 1100px;
-      margin-top: 30px; position: relative; z-index: 2;
+      gap: 20px; width: 100%;
+      max-width: 1100px;
+      position: relative; z-index: 2;
     }
     .closing-item {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px; padding: 24px;
+      border-radius: 12px; padding: 20px;
       backdrop-filter: blur(8px);
     }
     .closing-item .num {
       font-family: 'Fraunces', serif; font-style: italic;
-      font-size: 48px; color: var(--gold); line-height: 1;
-      margin-bottom: 12px;
+      font-size: clamp(36px, 3.8vw, 44px); color: var(--gold); line-height: 1;
+      margin-bottom: 10px;
     }
     .closing-item .title {
-      font-family: 'Fraunces', serif; font-size: 18px;
-      color: white; margin-bottom: 8px;
+      font-family: 'Fraunces', serif; font-size: 17px;
+      color: white; margin-bottom: 6px;
     }
-    .closing-item .desc { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.78); }
+    .closing-item .desc { font-size: 12.5px; line-height: 1.5; color: rgba(255,255,255,0.78); }
 
     /* ===== NAV BAR ===== */
     .nav-bar {
@@ -792,14 +817,14 @@
     </section>
 
     <!-- SLIDE 14 · Cierre -->
-    <section class="slide slide-dark" data-slide="14" style="justify-content: center;">
+    <section class="slide slide-dark slide-cierre" data-slide="14">
       <div class="hero-full">
         <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920&q=80&auto=format&fit=crop" alt="">
       </div>
-      <div style="position: relative; z-index: 2; max-width: 1200px;">
-        <div class="eyebrow">¿Listos?</div>
-        <h1 class="title">A <em>tomar decisiones</em>.</h1>
-        <p class="subtitle" style="color: rgba(255,255,255,0.82); max-width: 64ch; margin-bottom: 20px;">
+      <div class="cierre-content">
+        <div class="eyebrow" style="margin-bottom: 14px;">¿Listos?</div>
+        <h1 class="title cierre-title">A <em>tomar decisiones</em>.</h1>
+        <p class="subtitle cierre-subtitle">
           El líder de cada equipo abre la URL en su laptop. El resto del equipo se prepara
           para la primera discusión estratégica.
         </p>
@@ -834,7 +859,7 @@
     <button class="nav-fullscreen" onclick="togglePantallaCompleta()">Pantalla completa</button>
   </div>
 
-  <div class="watermark">© 2026 VISORIA Intelligence · Mg. Javier Rubiano</div>
+  <div class="watermark">© 2026 VISORIA Intelligence · Profesor Javier Rubiano</div>
 
   <script>
     // ============================================================
@@ -842,14 +867,38 @@
     // Protección y disuasión contra copia no autorizada
     // ============================================================
     (function() {
-      console.log('%c⚠️  DigitalMKT Arena · VISORIA Intelligence',
-        'color:#C8963E;font-size:18px;font-weight:bold;font-family:Georgia,serif;');
-      console.log('%c© 2026 Mg. Javier Fernando Rubiano Espinosa · Todos los derechos reservados',
-        'color:#0B2545;font-size:13px;');
-      console.log('%cEste código y sistema son propiedad intelectual privada.\nUso académico restringido a la Maestría EMD · Universidad de La Salle.\n\n📧 Para licencias o uso autorizado: jfrubiano72@unisalle.edu.co\n🌐 javierrubiano.com',
-        'color:#5A6878;font-size:12px;line-height:1.6;');
-      console.log('%c⛔ REPRODUCIR, COPIAR O REUTILIZAR ESTE CÓDIGO SIN AUTORIZACIÓN ESCRITA CONSTITUYE INFRACCIÓN DE DERECHOS DE AUTOR',
-        'color:#C0392B;font-size:11px;font-weight:bold;background:#FFF3E0;padding:4px 8px;border-radius:4px;');
+      // Banner con bordes Unicode (siempre visible, no depende de colores)
+      var banner = [
+        '',
+        '+--------------------------------------------------------------------+',
+        '|   DigitalMKT Arena  ·  VISORIA Intelligence  ·  (C) 2026           |',
+        '|   Profesor Javier Fernando Rubiano Espinosa                         |',
+        '|   Todos los derechos reservados                                      |',
+        '+--------------------------------------------------------------------+',
+        '|   Este codigo y sistema son propiedad intelectual privada.          |',
+        '|   Uso academico exclusivo de la Maestria EMD - Universidad La Salle.|',
+        '|                                                                      |',
+        '|   PROHIBIDO reproducir, copiar, modificar o redistribuir sin        |',
+        '|   autorizacion escrita del autor.                                    |',
+        '|                                                                      |',
+        '|   Licenciamiento:    jfrubiano72@unisalle.edu.co                    |',
+        '|   Mas informacion:   javierrubiano.com                              |',
+        '+--------------------------------------------------------------------+',
+        ''
+      ].join('\n');
+
+      // Mensaje plano (siempre visible en cualquier consola)
+      console.log(banner);
+
+      // Banners con colores de alto contraste (refuerzo visual)
+      console.log('%c DigitalMKT Arena ',
+        'background:#C8963E;color:#FFFFFF;font-size:16px;font-weight:bold;padding:8px 16px;border-radius:4px;');
+      console.log('%c (c) 2026 VISORIA Intelligence - Profesor Javier Fernando Rubiano Espinosa ',
+        'background:#0B2545;color:#FFFFFF;font-size:12px;padding:8px 14px;border-radius:4px;');
+      console.log('%c ALERTA: Copia o reutilizacion no autorizada constituye infraccion de derechos de autor ',
+        'background:#C0392B;color:#FFFFFF;font-size:11px;font-weight:bold;padding:8px 14px;border-radius:4px;');
+      console.log('%c Licencias: jfrubiano72@unisalle.edu.co ',
+        'background:#137DC5;color:#FFFFFF;font-size:11px;padding:8px 14px;border-radius:4px;');
 
       document.addEventListener('contextmenu', function(e) {
         var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
