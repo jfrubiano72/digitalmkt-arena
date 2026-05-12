@@ -139,8 +139,10 @@
               <div class="card-eyebrow">Inteligencia de mercado</div>
               <h3 style="margin-bottom: var(--space-2);">Investiga tu marca</h3>
               <p style="color: var(--ink-soft); font-size: 14px; margin-bottom: var(--space-4);">
-                Consulta las plataformas profesionales para obtener estados financieros, exportaciones,
-                importaciones y análisis sectorial. Usa estos datos para sustentar tus decisiones.
+                Consulta las bases de datos profesionales para obtener estados financieros,
+                exportaciones, importaciones y análisis sectorial. Los enlaces te llevan a la
+                hemeroteca de La Salle: ingresa con tu cuenta institucional y, una vez dentro,
+                busca el nombre de tu marca.
               </p>
 
               <div class="external-links">
@@ -158,8 +160,9 @@
 
               <div style="margin-top: var(--space-5); padding: var(--space-4); background: var(--bone); border-radius: var(--radius-sm); font-size: 13px; color: var(--ink-soft);">
                 <strong style="color: var(--navy);">Pista del docente:</strong>
-                comienza con los ingresos del último año fiscal y compáralos con sus dos competidores
-                directos. Esos números van a ser críticos para tu primera jugada.
+                en EMIS busca los ingresos del último año fiscal de tu marca y compáralos con sus
+                dos competidores directos. En Legiscomex revisa si la marca importa o exporta y
+                en qué volúmenes. Esos números serán críticos para tu primera jugada.
               </div>
             </div>
 
@@ -281,16 +284,18 @@
       }
     }
 
-    function setExtLink(id, url) {
+    // URL única del proxy de la biblioteca de La Salle.
+    // Lleva a la autenticación institucional y, una vez autenticado,
+    // al portal donde están disponibles EMIS y Legiscomex.
+    const BIBLIOTECA_URL = 'https://hemeroteca.lasalle.edu.co/login?url=https://tubiblioteca.sigmadigital.com.co/unisalle/?basesdatos=1';
+
+    function setExtLink(id, _ignoredUrl) {
+      // Ignoramos la URL específica del Sheet: todas las marcas usan el proxy.
       const el = document.getElementById(id);
       if (!el) return;
-      if (url && /^https?:\/\//.test(url)) {
-        el.href = url;
-      } else {
-        el.style.opacity = '0.5';
-        el.style.pointerEvents = 'none';
-        el.removeAttribute('href');
-      }
+      el.href = BIBLIOTECA_URL;
+      el.target = '_blank';
+      el.rel = 'noopener';
     }
 
     (async function () {
