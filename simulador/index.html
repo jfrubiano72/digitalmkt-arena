@@ -47,8 +47,8 @@
                 <span class="value" id="hero-cohorte">Cargando…</span>
               </div>
               <div class="hero-meta-item">
-                <span class="label">Marcas en juego</span>
-                <span class="value" id="hero-marcas">—</span>
+                <span class="label">Marca del semestre</span>
+                <span class="value" id="hero-marcas">Cruz Verde</span>
               </div>
               <div class="hero-meta-item">
                 <span class="label">Rondas planificadas</span>
@@ -104,16 +104,8 @@
         const presup = (cfg.parametros && cfg.parametros.presupuesto_inicial && cfg.parametros.presupuesto_inicial.valor) || cfg.cohorte.presupuesto_inicial;
         document.getElementById('hero-presupuesto').textContent =
           presup ? '$ ' + DMKTUtils.formatearAbreviado(presup) + ' COP' : '—';
-
-        const marcasResp = await DMKTApi.listarMarcasDisponibles();
-        const totalLibres = (marcasResp.marcas_disponibles || marcasResp.marcas || []).length;
-        try {
-          const equipos = await DMKTApi.listarEquiposPorCohorte();
-          const tomadas = equipos.length;
-          document.getElementById('hero-marcas').textContent = (totalLibres + tomadas) + ' · ' + totalLibres + ' libres';
-        } catch (e) {
-          document.getElementById('hero-marcas').textContent = totalLibres + ' libres';
-        }
+        // La "Marca del semestre" está hardcodeada en el HTML (Cruz Verde).
+        // No se consulta al backend porque todos los equipos juegan la misma marca.
       } catch (e) {
         document.getElementById('hero-cohorte').textContent = 'Sin conexión';
         document.getElementById('footer-status').textContent = 'Backend desconectado';
