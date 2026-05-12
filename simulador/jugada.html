@@ -439,6 +439,10 @@
           <span style="font-family: var(--font-mono); font-style: normal; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 8px;">Observación del simulador:</span>
           <span id="resultado-nota">—</span>
         </div>
+
+        <div id="resultado-proxima-info" class="hidden" style="margin-top: var(--space-4); padding: 14px 18px; background: var(--gold-pale); border: 1px solid var(--gold-soft); border-radius: var(--radius-sm); font-size: 14px; color: var(--ink); line-height: 1.5;">
+          <!-- Se rellena por JS -->
+        </div>
       </div>
 
       <div class="modal-actions">
@@ -763,6 +767,7 @@
       const r = data.resultados;
       const j = data.jugada;
       const e = data.equipo_actualizado;
+      const econ = data.economia || {};
 
       document.getElementById('resultado-ventas').textContent = formatCOP(r.ventas);
       document.getElementById('resultado-roas').textContent = r.roas + 'x';
@@ -789,6 +794,24 @@
 
       document.getElementById('resultado-nota').textContent = r.nota_motor;
 
+      // Inyección próxima ronda
+      const infoProxima = document.getElementById('resultado-proxima-info');
+      if (econ.inyeccion_proxima_ronda && econ.inyeccion_proxima_ronda > 0) {
+        const totalSig = j.presupuesto_despues + econ.inyeccion_proxima_ronda;
+        infoProxima.classList.remove('hidden');
+        infoProxima.innerHTML =
+          '<strong style="color: var(--gold);">Próxima ronda (R' + (j.ronda + 1) + '):</strong> ' +
+          'Recibirás <strong>+ $' + (econ.inyeccion_proxima_ronda / 1000000).toFixed(0) + 'M COP</strong> de inyección. ' +
+          'Tu presupuesto total disponible en R' + (j.ronda + 1) + ' será $' + (totalSig / 1000000).toFixed(1) + 'M.';
+      } else if (econ.es_ultima_ronda) {
+        infoProxima.classList.remove('hidden');
+        infoProxima.innerHTML =
+          '<strong style="color: var(--gold);">Última ronda completada</strong>. ' +
+          'Tu desempeño final será comparado con los demás equipos en el dashboard del docente.';
+      } else {
+        infoProxima.classList.add('hidden');
+      }
+
       document.getElementById('modal-resultado').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
@@ -796,18 +819,46 @@
     // ===== Carga inicial =====
     (async function() {
       try {
-        const data = await DMKTApi.autenticarEquipo(sesion.codigo_acceso);
-        const eq = data.equipo;
+        // Cargar en paralelo equipo y config (para tener parámetros de inyección)
+        const [data, config] = await Promise.all([
+          DMKTApi.autenticarEquipo(sesion.codigo_acceso),
+          DMKTApi.obtenerConfigJuego()
+        ]);
 
-        // Si ya jugó la ronda actual, redirigir al panel
-        // (la lógica del backend bloquea, pero le damos UX más clara)
-        presupuestoDisponible = Number(eq.presupuesto_actual) || 0;
+        const eq = data.equipo;
         const rondaJugada = Number(eq.ronda_actual) || 0;
         rondaActual = rondaJugada + 1;
+
+        // Calcular inyección de presupuesto para esta ronda (si aplica, R2-R6)
+        let inyeccionEstaRonda = 0;
+        if (rondaActual >= 2 && config.parametros) {
+          const paramKey = 'inyeccion_r' + rondaActual;
+          if (config.parametros[paramKey] && config.parametros[paramKey].valor) {
+            inyeccionEstaRonda = Number(config.parametros[paramKey].valor) || 0;
+          }
+        }
+
+        const presupuestoBase = Number(eq.presupuesto_actual) || 0;
+        presupuestoDisponible = presupuestoBase + inyeccionEstaRonda;
 
         document.getElementById('ronda-tag').textContent = 'Ronda ' + rondaActual;
         document.getElementById('equipo-nombre').textContent = eq.nombre_equipo;
         document.getElementById('tracker-disponible').textContent = formatAbreviado(presupuestoDisponible);
+
+        // Mostrar banner de inyección si aplica
+        if (inyeccionEstaRonda > 0) {
+          const banner = document.createElement('div');
+          banner.style.cssText = 'background: rgba(200, 150, 62, 0.15); border: 1px solid rgba(200, 150, 62, 0.4); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-5); font-size: 13px; color: white;';
+          banner.innerHTML =
+            '<strong style="color: var(--gold-soft);">💰 Inyección de presupuesto:</strong> ' +
+            'Esta ronda recibiste <strong style="color: var(--gold-soft);">+ $' +
+            (inyeccionEstaRonda / 1000000).toFixed(0) + 'M COP</strong> ' +
+            '(de la ronda anterior te quedaban $' + (presupuestoBase / 1000000).toFixed(1) + 'M). ' +
+            'Tu presupuesto total disponible es $' + (presupuestoDisponible / 1000000).toFixed(1) + 'M.';
+          // Insertar arriba del primer container
+          const firstContainer = document.querySelector('.jugada-header .container');
+          if (firstContainer) firstContainer.appendChild(banner);
+        }
 
         renderCategorias();
         actualizarTracker();
