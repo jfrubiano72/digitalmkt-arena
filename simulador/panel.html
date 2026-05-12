@@ -225,18 +225,29 @@
           </div>
         </div>
 
-        <!-- AVISO SPRINT 2 -->
-        <div class="card fade-in-up delay-4" style="margin-top: var(--space-6); background: var(--gold-pale); border-color: var(--gold-soft);">
-          <div style="display: flex; gap: var(--space-4); align-items: center; flex-wrap: wrap; justify-content: space-between;">
+        <!-- CTA: JUGAR RONDA -->
+        <div class="card fade-in-up delay-4" id="cta-jugar" style="margin-top: var(--space-6); background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%); color: white; border-color: var(--navy); position: relative; overflow: hidden;">
+          <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(200, 150, 62, 0.18), transparent 60%); pointer-events: none;"></div>
+          <div style="position: relative; display: flex; gap: var(--space-5); align-items: center; flex-wrap: wrap; justify-content: space-between;">
             <div>
-              <div class="card-eyebrow" style="color: var(--gold);">Próximamente · Sprint 2</div>
-              <h3 style="margin-bottom: var(--space-2);">El motor de jugada se activa pronto</h3>
-              <p style="color: var(--ink-soft); font-size: 14px; max-width: 56ch;">
-                En el Sprint 2 podrás asignar presupuesto a las 10 categorías de decisión, ver el
-                resultado de cada ronda y observar tu posición en el ranking dinámico jugada por jugada.
+              <div class="card-eyebrow" style="color: var(--gold);">Ronda <span id="cta-ronda">—</span> · Lista para jugar</div>
+              <h3 style="color: white; margin-bottom: var(--space-2);">Asigna tu presupuesto de la jugada</h3>
+              <p style="color: rgba(255,255,255,0.78); font-size: 14px; max-width: 56ch;">
+                Tienes <strong id="cta-presupuesto" style="color: var(--gold-soft);">—</strong> disponibles para invertir en
+                las 10 categorías de decisión. Tu jugada genera resultados al instante.
               </p>
             </div>
+            <a href="jugada.html" class="btn btn-gold" id="btn-jugar" style="background: var(--gold); color: white; border-color: var(--gold); padding: 14px 28px; font-size: 15px;">
+              Iniciar jugada →
+            </a>
           </div>
+        </div>
+
+        <!-- HISTÓRICO DE JUGADAS (se llena por JS si hay) -->
+        <div id="historico-section" class="hidden" style="margin-top: var(--space-6);">
+          <div class="card-eyebrow" style="color: var(--teal); margin-bottom: var(--space-3);">Histórico</div>
+          <h3 style="margin-bottom: var(--space-4);">Tus jugadas anteriores</h3>
+          <div id="historico-grid" style="display: grid; gap: var(--space-3);"></div>
         </div>
 
       </div>
@@ -340,6 +351,35 @@
         setText('cohorte-rondas', cohorte.num_rondas);
         setText('cohorte-docente', cohorte.docente);
 
+        // ===== CTA de jugar =====
+        const totalRondasCfg = (config.parametros && config.parametros.num_rondas)
+          ? Number(config.parametros.num_rondas.valor) : Number(cohorte.num_rondas) || 6;
+        const rondaJugada = Number(equipo.ronda_actual) || 0;
+        const proximaRonda = rondaJugada + 1;
+        const ctaCard = document.getElementById('cta-jugar');
+
+        if (proximaRonda > totalRondasCfg) {
+          // Ya terminó todas las rondas
+          ctaCard.innerHTML = '<div style="position: relative;">' +
+            '<div class="card-eyebrow" style="color: var(--gold);">Juego completado</div>' +
+            '<h3 style="color: white; margin-bottom: var(--space-2);">¡Todas las rondas jugadas!</h3>' +
+            '<p style="color: rgba(255,255,255,0.78); font-size: 14px;">Espera el cierre del docente para ver resultados finales.</p>' +
+            '</div>';
+        } else {
+          setText('cta-ronda', proximaRonda);
+          document.getElementById('cta-presupuesto').textContent = DMKTUtils.formatearAbreviado(equipo.presupuesto_actual) + ' COP';
+        }
+
+        // ===== Cargar histórico =====
+        try {
+          const historico = await DMKTApi.obtenerHistoricoJugadas(equipo.equipo_id);
+          if (historico && historico.length > 0) {
+            renderHistorico(historico);
+          }
+        } catch (e) {
+          console.warn('No se pudo cargar histórico:', e);
+        }
+
         loader.classList.add('hidden');
         panelContent.classList.remove('hidden');
 
@@ -359,6 +399,50 @@
         }
       }
     })();
+
+    function renderHistorico(jugadas) {
+      const section = document.getElementById('historico-section');
+      const grid = document.getElementById('historico-grid');
+      section.classList.remove('hidden');
+
+      grid.innerHTML = jugadas.map(function(j) {
+        const ventasFmt = '$ ' + Number(j.ventas_obtenidas).toLocaleString('es-CO');
+        const roas = j.roas || 0;
+        const deltaBrand = Number(j.brand_equity_despues) - Number(j.brand_equity_antes);
+        const deltaStr = deltaBrand >= 0 ? '+' + deltaBrand.toFixed(1) : deltaBrand.toFixed(1);
+        const deltaColor = deltaBrand >= 0 ? 'var(--ok)' : 'var(--error)';
+
+        return (
+          '<div class="card light" style="padding: var(--space-4);">' +
+            '<div style="display: flex; gap: var(--space-4); align-items: center; flex-wrap: wrap; justify-content: space-between;">' +
+              '<div style="display: flex; gap: var(--space-5); align-items: center; flex-wrap: wrap;">' +
+                '<div>' +
+                  '<div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);">Ronda</div>' +
+                  '<div style="font-family: var(--font-display); font-size: 28px; color: var(--navy); font-weight: 500; line-height: 1;">R' + j.ronda + '</div>' +
+                '</div>' +
+                '<div>' +
+                  '<div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted);">Ventas</div>' +
+                  '<div style="font-family: var(--font-display); font-size: 18px; color: var(--navy); font-weight: 500;">' + ventasFmt + '</div>' +
+                '</div>' +
+                '<div>' +
+                  '<div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted);">ROAS</div>' +
+                  '<div style="font-family: var(--font-display); font-size: 18px; color: var(--navy); font-weight: 500;">' + roas + 'x</div>' +
+                '</div>' +
+                '<div>' +
+                  '<div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted);">Brand</div>' +
+                  '<div style="font-family: var(--font-display); font-size: 18px; color: var(--navy); font-weight: 500;">' +
+                    j.brand_equity_despues + ' <span style="font-size: 12px; color: ' + deltaColor + ';">(' + deltaStr + ')</span>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div style="max-width: 350px; font-size: 12px; color: var(--ink-soft); font-style: italic;">' +
+                DMKTUtils.escapeHtml(j.nota_motor || '') +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
 
     document.getElementById('btn-cerrar-sesion').addEventListener('click', function (e) {
       e.preventDefault();
