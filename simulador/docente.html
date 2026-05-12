@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Docente · DigitalMKT Arena</title>
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    body { background: #F4F1EA; }
+
+    /* === Header ===  */
+    .dash-header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
+      color: white;
+      padding: var(--space-6) 0 var(--space-5);
+      position: relative;
+      overflow: hidden;
+    }
+    .dash-header::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(200, 150, 62, 0.20), transparent 60%);
+      pointer-events: none;
+    }
+    .dash-header h1 { color: white; margin: 0; }
+    .dash-header h1 em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--gold-soft);
+    }
+
+    .dash-meta {
+      display: flex; gap: var(--space-6); flex-wrap: wrap;
+      margin-top: var(--space-4);
+      align-items: center;
+    }
+    .dash-meta-item {
+      display: flex; flex-direction: column;
+    }
+    .dash-meta-item .label {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+    }
+    .dash-meta-item .value {
+      font-family: var(--font-display); font-size: 24px;
+      font-weight: 500; line-height: 1.1;
+      color: white;
+    }
+    .dash-meta-item .value em {
+      font-style: italic; color: var(--gold-soft); font-weight: 400;
+    }
+
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px; border-radius: 100px;
+      background: rgba(105, 219, 124, 0.15);
+      border: 1px solid rgba(105, 219, 124, 0.4);
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: #69DB7C;
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #69DB7C;
+      animation: live-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%, 100% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    .btn-refresh {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 8px 16px;
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-refresh:hover {
+      background: rgba(255,255,255,0.18);
+      border-color: var(--gold);
+    }
+
+    /* === Podio ===  */
+    .podio-section {
+      padding: var(--space-7) 0 var(--space-5);
+    }
+    .section-title {
+      font-family: var(--font-display); font-size: 28px;
+      font-weight: 500; color: var(--navy);
+      margin-bottom: var(--space-5);
+    }
+    .section-title em { font-style: italic; color: var(--teal); }
+
+    .podio {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+      align-items: end;
+    }
+    .podio-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+    .podio-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(11, 37, 69, 0.10); }
+
+    .podio-card.gold {
+      background: linear-gradient(160deg, #FFF7E8 0%, #ffffff 60%);
+      border-color: var(--gold);
+      padding: var(--space-6) var(--space-5);
+      transform: translateY(-12px);
+    }
+    .podio-card.silver { background: linear-gradient(160deg, #F0F2F5 0%, #ffffff 60%); border-color: #C8CDD3; }
+    .podio-card.bronze { background: linear-gradient(160deg, #FDF1E3 0%, #ffffff 60%); border-color: #C68E63; }
+
+    .podio-medal {
+      font-size: 36px;
+      display: block;
+      margin-bottom: var(--space-2);
+    }
+    .podio-pos {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: var(--space-2);
+    }
+    .podio-nombre {
+      font-family: var(--font-display);
+      font-size: 22px; font-weight: 500;
+      color: var(--navy);
+      margin-bottom: var(--space-3);
+      line-height: 1.2;
+    }
+    .podio-card.gold .podio-nombre { font-size: 26px; }
+    .podio-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--line);
+    }
+    .podio-stat .label {
+      font-family: var(--font-mono); font-size: 9px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-muted); display: block;
+    }
+    .podio-stat .value {
+      font-family: var(--font-display); font-size: 18px;
+      font-weight: 500; color: var(--navy);
+    }
+
+    /* === Stats agregadas ===  */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+    }
+    .stat-card .label {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-muted); margin-bottom: var(--space-2);
+    }
+    .stat-card .value {
+      font-family: var(--font-display); font-size: 30px;
+      font-weight: 500; color: var(--navy);
+      line-height: 1;
+    }
+    .stat-card .suffix {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--ink-muted); margin-left: 4px;
+    }
+
+    /* === Insights ===  */
+    .insights-section {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      margin-bottom: var(--space-6);
+      border-left: 4px solid var(--gold);
+    }
+    .insights-title {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold); font-weight: 600;
+      margin-bottom: var(--space-3);
+    }
+    .insights-list {
+      list-style: none; padding: 0; margin: 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-3);
+    }
+    .insights-list li {
+      padding: 10px 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink);
+      position: relative;
+      padding-left: 22px;
+    }
+    .insights-list li::before {
+      content: '→';
+      position: absolute; left: 0; top: 9px;
+      color: var(--gold); font-weight: bold;
+    }
+
+    /* === Charts ===  */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+    @media (max-width: 900px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    .chart-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+    }
+    .chart-card.full { grid-column: 1 / -1; }
+    .chart-title {
+      font-family: var(--font-display);
+      font-size: 18px; font-weight: 500;
+      color: var(--navy);
+      margin-bottom: var(--space-2);
+    }
+    .chart-subtitle {
+      font-size: 13px; color: var(--ink-soft);
+      margin-bottom: var(--space-4);
+    }
+    .chart-canvas-wrap {
+      position: relative;
+      height: 320px;
+    }
+    .chart-canvas-wrap.tall { height: 420px; }
+
+    /* === Tabla comparativa ===  */
+    .tabla-section {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      padding: var(--space-5);
+      margin-bottom: var(--space-6);
+      overflow-x: auto;
+    }
+    .tabla-equipos {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .tabla-equipos th {
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--ink-muted);
+      text-align: left; padding: 10px 12px;
+      border-bottom: 2px solid var(--navy);
+    }
+    .tabla-equipos th.num { text-align: right; }
+    .tabla-equipos td {
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .tabla-equipos td.num { text-align: right; font-family: var(--font-mono); }
+    .tabla-equipos tr:hover { background: var(--bone); }
+    .tabla-equipos .pos-badge {
+      display: inline-block;
+      min-width: 26px; height: 26px;
+      line-height: 26px; text-align: center;
+      border-radius: 50%;
+      font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+      background: var(--bone);
+      color: var(--ink-soft);
+    }
+    .tabla-equipos .pos-badge.gold { background: var(--gold); color: white; }
+    .tabla-equipos .pos-badge.silver { background: #C8CDD3; color: var(--navy); }
+    .tabla-equipos .pos-badge.bronze { background: #C68E63; color: white; }
+    .tabla-equipos .nombre-equipo {
+      font-weight: 500; color: var(--navy);
+    }
+
+    /* === Loader ===  */
+    .loader-overlay {
+      position: fixed; inset: 0;
+      background: rgba(244, 241, 234, 0.85);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(3px);
+    }
+    .loader-overlay.hidden { display: none; }
+
+    /* === Estado vacío === */
+    .empty-state {
+      background: white;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-md);
+      padding: var(--space-7);
+      text-align: center;
+      color: var(--ink-soft);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loader-overlay" id="loader">
+    <div style="text-align: center;">
+      <span class="spinner" style="width: 32px; height: 32px; border-width: 3px;"></span>
+      <p style="margin-top: var(--space-3); color: var(--ink-soft); font-size: 14px;">Cargando dashboard…</p>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="dash-header">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-3);">
+        <div>
+          <span class="live-badge">
+            <span class="live-dot"></span>
+            <span>EN VIVO · ACTUALIZACIÓN AUTOMÁTICA</span>
+          </span>
+          <h1 style="margin-top: var(--space-3);">
+            Dashboard <em>docente</em>
+          </h1>
+          <p style="color: rgba(255,255,255,0.78); margin-top: var(--space-2); font-size: 14px;">
+            Visualización en tiempo real del desempeño de los equipos en la cohorte
+            <strong style="color: white;" id="cohorte-nombre">—</strong>.
+          </p>
+        </div>
+        <div style="display: flex; gap: var(--space-3); align-items: center;">
+          <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.55);" id="ultima-actualizacion">
+            Última actualización: —
+          </span>
+          <button class="btn-refresh" onclick="cargarDashboard()">⟲ Refrescar</button>
+        </div>
+      </div>
+
+      <div class="dash-meta">
+        <div class="dash-meta-item">
+          <span class="label">Equipos activos</span>
+          <span class="value" id="meta-equipos">—</span>
+        </div>
+        <div class="dash-meta-item">
+          <span class="label">Ronda actual</span>
+          <span class="value"><em id="meta-ronda">—</em><span style="font-size: 18px; color: rgba(255,255,255,0.55);"> / <span id="meta-rondas-total">—</span></span></span>
+        </div>
+        <div class="dash-meta-item">
+          <span class="label">Jugadas registradas</span>
+          <span class="value" id="meta-jugadas">—</span>
+        </div>
+        <div class="dash-meta-item">
+          <span class="label">Ventas totales cohorte</span>
+          <span class="value" id="meta-ventas">—</span>
+        </div>
+        <div class="dash-meta-item">
+          <span class="label">Brand equity promedio</span>
+          <span class="value" id="meta-brand">—</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-7);">
+
+      <!-- ESTADO VACÍO -->
+      <div id="empty-state" class="empty-state hidden">
+        <h2 style="margin-bottom: var(--space-3);">Aún no hay datos para mostrar</h2>
+        <p>Cuando los equipos comiencen a registrarse y jugar, el dashboard se llenará automáticamente.</p>
+      </div>
+
+      <!-- PODIO -->
+      <section class="podio-section" id="seccion-podio">
+        <h2 class="section-title">Podio actual · <em>top 3</em></h2>
+        <div class="podio" id="podio-container">
+          <!-- Generado por JS -->
+        </div>
+      </section>
+
+      <!-- STATS AGREGADAS -->
+      <div class="stats-grid" id="stats-grid"></div>
+
+      <!-- INSIGHTS -->
+      <div class="insights-section" id="insights-section">
+        <div class="insights-title">Observaciones del simulador</div>
+        <ul class="insights-list" id="insights-list"></ul>
+      </div>
+
+      <!-- CHARTS GRID -->
+      <h2 class="section-title">Análisis <em>comparativo</em></h2>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Ventas acumuladas por equipo</div>
+          <div class="chart-subtitle">Comparativo del ingreso total generado por cada equipo en lo que va del juego.</div>
+          <div class="chart-canvas-wrap"><canvas id="chart-ventas"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Brand equity actual</div>
+          <div class="chart-subtitle">Posición de cada equipo en construcción de marca (escala 0-100).</div>
+          <div class="chart-canvas-wrap"><canvas id="chart-brand"></canvas></div>
+        </div>
+        <div class="chart-card full">
+          <div class="chart-title">Evolución de ventas por ronda</div>
+          <div class="chart-subtitle">Trayectoria de cada equipo ronda por ronda. Permite ver quién mejora, quién se estanca y quién decae.</div>
+          <div class="chart-canvas-wrap tall"><canvas id="chart-evolucion"></canvas></div>
+        </div>
+        <div class="chart-card full">
+          <div class="chart-title">Mix de inversión · última ronda jugada</div>
+          <div class="chart-subtitle">Cómo distribuyó el presupuesto cada equipo en su jugada más reciente. Permite identificar estrategias dominantes.</div>
+          <div class="chart-canvas-wrap tall"><canvas id="chart-mix"></canvas></div>
+        </div>
+      </div>
+
+      <!-- TABLA COMPARATIVA -->
+      <h2 class="section-title">Tabla <em>comparativa</em></h2>
+      <div class="tabla-section">
+        <table class="tabla-equipos">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th>Equipo</th>
+              <th class="num">Ronda</th>
+              <th class="num">Ventas acum.</th>
+              <th class="num">Brand</th>
+              <th class="num">Seguidores</th>
+              <th class="num">Presupuesto</th>
+              <th class="num">Score</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer-inner">
+      <span>© 2026 VISORIA Intelligence · Mg. Javier F. Rubiano Espinosa</span>
+      <span>Dashboard Docente · Sprint 2</span>
+    </div>
+  </footer>
+
+  <script src="js/api-client.js"></script>
+  <script>
+    // Paleta para los gráficos — colores VISORIA + complementos para múltiples equipos
+    const PALETA_EQUIPOS = [
+      '#137DC5', // teal (líder)
+      '#C8963E', // gold
+      '#0B2545', // navy
+      '#69DB7C', // verde
+      '#E67E22', // naranja
+      '#9B59B6', // morado
+      '#E74C3C', // rojo
+      '#1ABC9C', // turquesa
+    ];
+    const NOMBRES_CATEGORIAS = {
+      MEDPAG: 'Medios pagos',
+      MEDTRAD: 'Tradicionales',
+      ORGAN: 'Orgánico',
+      INFLU: 'Influencers',
+      PRODPRE: 'Producto/Precio',
+      WEBUX: 'Sitio web',
+      RRSS: 'Redes sociales',
+      ESTMER: 'Estudios',
+      ASES: 'Asesoría',
+      INTIA: 'IA / Inteligencia'
+    };
+
+    // Estado global de gráficos para destrucción/recreación
+    let chartVentas, chartBrand, chartEvolucion, chartMix;
+
+    // Helpers
+    function formatAbreviado(n) {
+      if (!n && n !== 0) return '—';
+      const num = Number(n);
+      if (num >= 1e9) return '$ ' + (num / 1e9).toFixed(1) + ' MM';
+      if (num >= 1e6) return '$ ' + (num / 1e6).toFixed(1) + ' M';
+      if (num >= 1e3) return '$ ' + (num / 1e3).toFixed(0) + ' K';
+      return '$ ' + num;
+    }
+    function formatNumero(n) {
+      return Number(n || 0).toLocaleString('es-CO');
+    }
+    function colorEquipo(i) {
+      return PALETA_EQUIPOS[i % PALETA_EQUIPOS.length];
+    }
+
+    // === CARGA PRINCIPAL ===
+    async function cargarDashboard() {
+      try {
+        const data = await DMKTApi.obtenerDashboardDocente();
+
+        document.getElementById('cohorte-nombre').textContent = data.stats.cohorte_nombre || 'COH-2026-1';
+        document.getElementById('ultima-actualizacion').textContent =
+          'Última actualización: ' + new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        renderStats(data.stats);
+        renderInsights(data.insights);
+
+        if (data.ranking.length === 0) {
+          document.getElementById('empty-state').classList.remove('hidden');
+          document.getElementById('seccion-podio').style.display = 'none';
+          document.querySelector('.charts-grid').style.display = 'none';
+          document.querySelector('.tabla-section').style.display = 'none';
+        } else {
+          document.getElementById('empty-state').classList.add('hidden');
+          document.getElementById('seccion-podio').style.display = '';
+          document.querySelector('.charts-grid').style.display = '';
+          document.querySelector('.tabla-section').style.display = '';
+
+          renderPodio(data.ranking);
+          renderTabla(data.ranking);
+          renderChartVentas(data.ranking);
+          renderChartBrand(data.ranking);
+          renderChartEvolucion(data.evolucion);
+          renderChartMix(data.mix_ultimo_round);
+        }
+
+        document.getElementById('loader').classList.add('hidden');
+      } catch (err) {
+        console.error('Error cargando dashboard:', err);
+        document.getElementById('loader').innerHTML =
+          '<div style="text-align: center; padding: var(--space-5); background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">' +
+            '<h3 style="margin-bottom: var(--space-2); color: var(--error);">No se pudo cargar el dashboard</h3>' +
+            '<p style="color: var(--ink-soft); margin-bottom: var(--space-3);">' + (err.message || 'Error desconocido') + '</p>' +
+            '<button class="btn btn-primary" onclick="location.reload()">Reintentar</button>' +
+          '</div>';
+      }
+    }
+
+    function renderStats(stats) {
+      document.getElementById('meta-equipos').textContent = stats.total_equipos;
+      document.getElementById('meta-ronda').textContent = stats.ronda_max_alcanzada || '0';
+      document.getElementById('meta-rondas-total').textContent = stats.rondas_totales;
+      document.getElementById('meta-jugadas').textContent = stats.total_jugadas;
+      document.getElementById('meta-ventas').textContent = formatAbreviado(stats.ventas_totales_cohorte);
+      document.getElementById('meta-brand').textContent = stats.brand_equity_promedio + '/100';
+
+      // Replicar en stats grid abajo
+      const statsHTML = [
+        { label: 'Equipos activos', value: stats.total_equipos },
+        { label: 'Ronda más avanzada', value: 'R' + stats.ronda_max_alcanzada, suffix: '/ ' + stats.rondas_totales },
+        { label: 'Jugadas totales', value: stats.total_jugadas },
+        { label: 'Brand equity promedio', value: stats.brand_equity_promedio, suffix: '/100' }
+      ].map(function(s) {
+        return '<div class="stat-card">' +
+          '<div class="label">' + s.label + '</div>' +
+          '<div class="value">' + s.value + (s.suffix ? '<span class="suffix">' + s.suffix + '</span>' : '') + '</div>' +
+          '</div>';
+      }).join('');
+      document.getElementById('stats-grid').innerHTML = statsHTML;
+    }
+
+    function renderInsights(insights) {
+      const list = document.getElementById('insights-list');
+      if (!insights || insights.length === 0) {
+        list.innerHTML = '<li>Aún no hay suficientes datos para generar observaciones.</li>';
+        return;
+      }
+      list.innerHTML = insights.map(function(i) { return '<li>' + i + '</li>'; }).join('');
+    }
+
+    function renderPodio(ranking) {
+      const top3 = ranking.slice(0, 3);
+      const container = document.getElementById('podio-container');
+
+      // Si hay menos de 3 equipos, ocultar podio o adaptar
+      if (top3.length < 3) {
+        container.style.gridTemplateColumns = 'repeat(' + top3.length + ', 1fr)';
+      } else {
+        container.style.gridTemplateColumns = '1fr 1.15fr 1fr';
+      }
+
+      // Orden visual: 2do, 1ro, 3ro (con el oro en el medio)
+      let orden;
+      if (top3.length === 1) orden = [top3[0]];
+      else if (top3.length === 2) orden = [top3[1], top3[0]];
+      else orden = [top3[1], top3[0], top3[2]];
+
+      const colores = {};
+      colores[top3[0].equipo_id] = { clase: 'gold', medalla: '🥇' };
+      if (top3[1]) colores[top3[1].equipo_id] = { clase: 'silver', medalla: '🥈' };
+      if (top3[2]) colores[top3[2].equipo_id] = { clase: 'bronze', medalla: '🥉' };
+
+      container.innerHTML = orden.map(function(eq) {
+        const conf = colores[eq.equipo_id];
+        return (
+          '<div class="podio-card ' + conf.clase + '">' +
+            '<span class="podio-medal">' + conf.medalla + '</span>' +
+            '<div class="podio-pos">Posición ' + eq.posicion + '</div>' +
+            '<div class="podio-nombre">' + escapeHtml(eq.nombre_equipo) + '</div>' +
+            '<div class="podio-stats">' +
+              '<div class="podio-stat">' +
+                '<span class="label">Ventas</span>' +
+                '<span class="value">' + formatAbreviado(eq.ventas_acumuladas) + '</span>' +
+              '</div>' +
+              '<div class="podio-stat">' +
+                '<span class="label">Brand</span>' +
+                '<span class="value">' + eq.brand_equity + '/100</span>' +
+              '</div>' +
+              '<div class="podio-stat">' +
+                '<span class="label">Ronda</span>' +
+                '<span class="value">R' + eq.ronda_actual + '</span>' +
+              '</div>' +
+              '<div class="podio-stat">' +
+                '<span class="label">Seguidores</span>' +
+                '<span class="value">' + formatNumero(eq.seguidores_total) + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    function renderTabla(ranking) {
+      const tbody = document.getElementById('tabla-body');
+      tbody.innerHTML = ranking.map(function(eq) {
+        let badgeClass = '';
+        if (eq.posicion === 1) badgeClass = 'gold';
+        else if (eq.posicion === 2) badgeClass = 'silver';
+        else if (eq.posicion === 3) badgeClass = 'bronze';
+
+        return (
+          '<tr>' +
+            '<td><span class="pos-badge ' + badgeClass + '">' + eq.posicion + '</span></td>' +
+            '<td class="nombre-equipo">' + escapeHtml(eq.nombre_equipo) + '</td>' +
+            '<td class="num">R' + eq.ronda_actual + '</td>' +
+            '<td class="num">' + formatAbreviado(eq.ventas_acumuladas) + '</td>' +
+            '<td class="num">' + eq.brand_equity + '/100</td>' +
+            '<td class="num">' + formatNumero(eq.seguidores_total) + '</td>' +
+            '<td class="num">' + formatAbreviado(eq.presupuesto_actual) + '</td>' +
+            '<td class="num">' + formatAbreviado(eq.score) + '</td>' +
+          '</tr>'
+        );
+      }).join('');
+    }
+
+    // ===== CHARTS =====
+
+    function renderChartVentas(ranking) {
+      const ctx = document.getElementById('chart-ventas').getContext('2d');
+      if (chartVentas) chartVentas.destroy();
+
+      const labels = ranking.map(function(r) { return r.nombre_equipo; });
+      const data = ranking.map(function(r) { return r.ventas_acumuladas; });
+      const colors = ranking.map(function(r, i) { return colorEquipo(i); });
+
+      chartVentas = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Ventas acumuladas (COP)',
+            data: data,
+            backgroundColor: colors,
+            borderRadius: 6,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return '  ' + formatAbreviado(ctx.parsed.x) + ' COP';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                callback: function(value) { return formatAbreviado(value); },
+                color: '#5A6878',
+                font: { family: 'Geist Mono, monospace', size: 11 }
+              },
+              grid: { color: 'rgba(11, 37, 69, 0.06)' }
+            },
+            y: {
+              ticks: { color: '#0B2545', font: { size: 13 } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderChartBrand(ranking) {
+      const ctx = document.getElementById('chart-brand').getContext('2d');
+      if (chartBrand) chartBrand.destroy();
+
+      chartBrand = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ranking.map(function(r) { return r.nombre_equipo; }),
+          datasets: [{
+            label: 'Brand Equity',
+            data: ranking.map(function(r) { return r.brand_equity; }),
+            backgroundColor: ranking.map(function(r, i) { return colorEquipo(i); }),
+            borderRadius: 6,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) { return '  ' + ctx.parsed.y + ' / 100'; }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#0B2545', font: { size: 12 } },
+              grid: { display: false }
+            },
+            y: {
+              min: 0, max: 100,
+              ticks: {
+                stepSize: 20,
+                color: '#5A6878',
+                font: { family: 'Geist Mono, monospace', size: 11 }
+              },
+              grid: { color: 'rgba(11, 37, 69, 0.06)' }
+            }
+          }
+        }
+      });
+    }
+
+    function renderChartEvolucion(evolucion) {
+      const ctx = document.getElementById('chart-evolucion').getContext('2d');
+      if (chartEvolucion) chartEvolucion.destroy();
+
+      // Detectar rondas únicas
+      const rondasSet = new Set();
+      evolucion.forEach(function(eq) {
+        eq.jugadas.forEach(function(j) { rondasSet.add(j.ronda); });
+      });
+      const rondas = Array.from(rondasSet).sort(function(a, b) { return a - b; });
+
+      if (rondas.length === 0) {
+        ctx.canvas.parentElement.innerHTML = '<div style="text-align: center; padding: var(--space-6); color: var(--ink-muted);">Aún no hay jugadas para mostrar evolución.</div>';
+        return;
+      }
+
+      const datasets = evolucion
+        .filter(function(eq) { return eq.jugadas.length > 0; })
+        .map(function(eq, i) {
+          const dataPorRonda = rondas.map(function(r) {
+            const jug = eq.jugadas.find(function(j) { return j.ronda === r; });
+            return jug ? jug.ventas : null;
+          });
+          return {
+            label: eq.nombre_equipo,
+            data: dataPorRonda,
+            borderColor: colorEquipo(i),
+            backgroundColor: colorEquipo(i) + '20',
+            borderWidth: 3,
+            tension: 0.3,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            fill: false,
+            spanGaps: true
+          };
+        });
+
+      chartEvolucion = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: rondas.map(function(r) { return 'R' + r; }),
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { size: 12 },
+                color: '#0B2545',
+                padding: 16,
+                usePointStyle: true,
+                pointStyle: 'circle'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return '  ' + ctx.dataset.label + ': ' + formatAbreviado(ctx.parsed.y);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#0B2545', font: { family: 'Geist Mono, monospace', size: 12 } },
+              grid: { display: false }
+            },
+            y: {
+              ticks: {
+                callback: function(v) { return formatAbreviado(v); },
+                color: '#5A6878',
+                font: { family: 'Geist Mono, monospace', size: 11 }
+              },
+              grid: { color: 'rgba(11, 37, 69, 0.06)' }
+            }
+          }
+        }
+      });
+    }
+
+    function renderChartMix(mixUltimoRound) {
+      const ctx = document.getElementById('chart-mix').getContext('2d');
+      if (chartMix) chartMix.destroy();
+
+      const equiposConDatos = mixUltimoRound.filter(function(eq) {
+        return Object.keys(eq.decisiones).length > 0;
+      });
+
+      if (equiposConDatos.length === 0) {
+        ctx.canvas.parentElement.innerHTML = '<div style="text-align: center; padding: var(--space-6); color: var(--ink-muted);">Aún no hay jugadas registradas.</div>';
+        return;
+      }
+
+      // Todas las categorías presentes
+      const cats = ['MEDPAG', 'MEDTRAD', 'ORGAN', 'INFLU', 'PRODPRE', 'WEBUX', 'RRSS', 'ESTMER', 'ASES', 'INTIA'];
+
+      // Colores fijos por categoría
+      const coloresCat = {
+        MEDPAG: '#137DC5', MEDTRAD: '#0B2545', ORGAN: '#1ABC9C',
+        INFLU: '#9B59B6', PRODPRE: '#C8963E', WEBUX: '#E67E22',
+        RRSS: '#E74C3C', ESTMER: '#69DB7C', ASES: '#5A6878', INTIA: '#2C3E50'
+      };
+
+      const datasets = cats.map(function(c) {
+        return {
+          label: NOMBRES_CATEGORIAS[c] || c,
+          data: equiposConDatos.map(function(eq) { return eq.decisiones[c] || 0; }),
+          backgroundColor: coloresCat[c],
+          borderWidth: 0
+        };
+      });
+
+      chartMix = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: equiposConDatos.map(function(eq) { return eq.nombre_equipo + ' (R' + eq.ronda + ')'; }),
+          datasets: datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { size: 11 },
+                color: '#0B2545',
+                padding: 12,
+                usePointStyle: true,
+                boxWidth: 12
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return '  ' + ctx.dataset.label + ': ' + formatAbreviado(ctx.parsed.y);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              ticks: { color: '#0B2545', font: { size: 12 } },
+              grid: { display: false }
+            },
+            y: {
+              stacked: true,
+              ticks: {
+                callback: function(v) { return formatAbreviado(v); },
+                color: '#5A6878',
+                font: { family: 'Geist Mono, monospace', size: 11 }
+              },
+              grid: { color: 'rgba(11, 37, 69, 0.06)' }
+            }
+          }
+        }
+      });
+    }
+
+    function escapeHtml(s) {
+      if (!s) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // === INICIALIZACIÓN ===
+    cargarDashboard();
+
+    // Auto-refresh cada 30 segundos
+    setInterval(cargarDashboard, 30000);
+  </script>
+
+</body>
+</html>
