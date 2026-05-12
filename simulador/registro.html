@@ -47,7 +47,7 @@
       <form id="form-registro" class="form-card" novalidate>
 
         <div class="form-section">
-          <span class="form-section-title">1 · Identidad del equipo</span>
+          <span class="form-section-title">Datos del equipo</span>
 
           <div class="field">
             <label for="nombre_equipo">Nombre del equipo</label>
@@ -68,26 +68,6 @@
             <input type="email" id="email_lider" name="email_lider" required
                    placeholder="ejemplo@unisalle.edu.co" autocomplete="email">
             <span class="hint">El docente usará este correo para comunicaciones del simulador.</span>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <span class="form-section-title">2 · Infraestructura del equipo (opcional)</span>
-
-          <div class="field">
-            <label for="repo_github">Repositorio GitHub del equipo</label>
-            <input type="url" id="repo_github" name="repo_github"
-                   placeholder="https://github.com/tu-equipo/digitalmkt"
-                   pattern="https?://.+">
-            <span class="hint">Si ya creaste el repositorio del equipo, pégalo aquí. Puedes agregarlo después.</span>
-          </div>
-
-          <div class="field">
-            <label for="url_dashboard">URL del dashboard publicado</label>
-            <input type="url" id="url_dashboard" name="url_dashboard"
-                   placeholder="https://tu-equipo.github.io/digitalmkt/"
-                   pattern="https?://.+">
-            <span class="hint">Cuando publiques tu dashboard en GitHub Pages, agrégalo aquí.</span>
           </div>
         </div>
 
@@ -162,9 +142,6 @@
       const nombreEquipo = document.getElementById('nombre_equipo').value.trim();
       const integrantesRaw = document.getElementById('integrantes').value.trim();
       const emailLider = document.getElementById('email_lider').value.trim();
-      const repoGithub = document.getElementById('repo_github').value.trim();
-      const urlDashboard = document.getElementById('url_dashboard').value.trim();
-
       if (!nombreEquipo) {
         DMKTUtils.toast('El nombre del equipo es obligatorio', 'error');
         return;
@@ -197,8 +174,6 @@
           integrantes: integrantes,
           email_lider: emailLider
         };
-        if (repoGithub) payload.repo_github = repoGithub;
-        if (urlDashboard) payload.url_dashboard = urlDashboard;
 
         const data = await DMKTApi.crearEquipo(payload);
         equipoCreado = data.equipo;
