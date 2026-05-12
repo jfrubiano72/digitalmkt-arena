@@ -1,10 +1,35 @@
 <!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════
+  DigitalMKT Arena · VISORIA Intelligence
+  © 2026 Mg. Javier Fernando Rubiano Espinosa. Todos los derechos reservados.
+
+  Esta plataforma es propiedad intelectual de VISORIA Intelligence y
+  Mg. Javier Fernando Rubiano Espinosa. Su uso está restringido a fines
+  académicos dentro de la Maestría en E-commerce y Marketing Digital
+  de la Universidad de La Salle.
+
+  PROHIBIDO:
+  - Reproducir, copiar, modificar o distribuir el código sin autorización
+  - Usar el código en proyectos derivados sin licencia escrita
+  - Reutilizar el método pedagógico ni el motor de simulación
+  - Comercializar versiones derivadas
+
+  Contacto para licenciamiento: jfrubiano72@unisalle.edu.co
+  Más información: javierrubiano.com
+  ════════════════════════════════════════════════════════════════
+-->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registrar equipo · DigitalMKT Arena</title>
-  <link rel="stylesheet" href="css/main.css">
+    <meta name="copyright" content="© 2026 VISORIA Intelligence · Mg. Javier Fernando Rubiano Espinosa">
+  <meta name="author" content="Mg. Javier Fernando Rubiano Espinosa · VISORIA Intelligence">
+  <meta name="rights" content="Todos los derechos reservados">
+  <meta name="terms" content="Uso académico exclusivo para Maestría EMD · Universidad de La Salle">
+  <meta name="license" content="Propietario · Contacto para licencias: jfrubiano72@unisalle.edu.co">
+<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
@@ -206,6 +231,32 @@
       DMKTAuth.guardarSesion(equipoCreado, codigoCreado);
       window.location.href = 'panel.html';
     });
+  </script>
+
+
+  <script>
+    // ============================================================
+    // DigitalMKT Arena · VISORIA Intelligence · © 2026
+    // Protección y disuasión contra copia no autorizada
+    // ============================================================
+    (function() {
+      console.log('%c⚠️  DigitalMKT Arena · VISORIA Intelligence',
+        'color:#C8963E;font-size:18px;font-weight:bold;font-family:Georgia,serif;');
+      console.log('%c© 2026 Mg. Javier Fernando Rubiano Espinosa · Todos los derechos reservados',
+        'color:#0B2545;font-size:13px;');
+      console.log('%cEste código y sistema son propiedad intelectual privada.\nUso académico restringido a la Maestría EMD · Universidad de La Salle.\n\n📧 Para licencias o uso autorizado: jfrubiano72@unisalle.edu.co\n🌐 javierrubiano.com',
+        'color:#5A6878;font-size:12px;line-height:1.6;');
+      console.log('%c⛔ REPRODUCIR, COPIAR O REUTILIZAR ESTE CÓDIGO SIN AUTORIZACIÓN ESCRITA CONSTITUYE INFRACCIÓN DE DERECHOS DE AUTOR',
+        'color:#C0392B;font-size:11px;font-weight:bold;background:#FFF3E0;padding:4px 8px;border-radius:4px;');
+
+      document.addEventListener('contextmenu', function(e) {
+        var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+        if (tag !== 'input' && tag !== 'textarea') {
+          e.preventDefault();
+          return false;
+        }
+      });
+    })();
   </script>
 
 </body>
